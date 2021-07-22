@@ -204,10 +204,6 @@ If there are no errors during the above deployment process, the following can be
 - All newly created member accounts would have GuardDuty automatically enabled.
 - Individual member accounts cannot suspend or disable GuardDuty by themselves.
 
-##### Potential Errors encountered:
-Error: error deleting S3 Bucket Public Access Block (<bucket-name>): OperationAborted: A conflicting conditional operation is currently in progress against this resource. Please try again.
-If this error is observed during bucket operations, retry the terraform apply once again.
-
 ## Contributing
 Thanks for your interest in contributing! There are many ways to contribute to this project. Get started with [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications).
 

@@ -278,6 +278,7 @@ resource "aws_s3_bucket" "gd_bucket" {
 }
 
 resource "aws_s3_bucket_public_access_block" "gd_bucket_block_public" {
+  depends_on = [aws_s3_bucket.gd_bucket, aws_s3_bucket_policy.gd_bucket_policy]
   bucket = aws_s3_bucket.gd_bucket.id
   provider   = aws.src
   block_public_acls   = true
@@ -287,6 +288,7 @@ resource "aws_s3_bucket_public_access_block" "gd_bucket_block_public" {
 }
 
 resource "aws_s3_bucket_policy" "gd_bucket_policy" {
+  depends_on = [aws_s3_bucket.gd_bucket]
   provider = aws.src
   bucket   = aws_s3_bucket.gd_bucket.id
   policy   = data.aws_iam_policy_document.bucket_pol.json
