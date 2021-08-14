@@ -6,6 +6,8 @@
 ### Abstract
 Infrastructure-as-Code in Terraform to enable Amazon GuardDuty for the given AWS Organizations organization. This artefact uses the Auto-Enable feature of GuardDuty to enroll newly created member accounts into GuardDuty's administration structure, while also turning on GuardDuty in all existing members. This artefact does not use the Member-invite based method.
 
+**UPDATE** - A runbook with steps to turn off Amazon GuardDuty which was setup using the Member-Invite based method has been provided (Runbook-for-turning-off-Amazon-GuardDuty-in-Member-Invite-method.docx). This can be used to turn off the Member-invite based model before using the given codebase to deploy GuardDuty using the Organizations-based method. 
+
 Additional features include:
 - Allows for the Security account as the Delegated Admin 
 - Creates the Amazon S3 bucket and AWS KMS key to publish findings in the Logging/Compliance Account, along with lifecycle policy to transition to Amazon S3 Glacier
