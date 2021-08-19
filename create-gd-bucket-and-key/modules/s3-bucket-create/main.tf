@@ -119,6 +119,45 @@ data "aws_iam_policy_document" "bucket_pol" {
       ]
     }
   }
+
+  statement {
+    sid    = "Access logs ACL check"
+    effect = "Allow"
+    principals {
+      type        = "Service"
+      identifiers = ["delivery.logs.amazonaws.com"]
+    }
+    actions = [
+      "s3:GetBucketAcl"
+    ]
+    resources = [
+      aws_s3_bucket.gd_bucket.arn
+    ]
+  }
+
+  statement {
+    sid    = "Access logs write"
+    effect = "Allow"
+    principals {
+      type        = "Service"
+      identifiers = ["delivery.logs.amazonaws.com"]
+    }
+    actions = [
+      "s3:PutObject"
+    ]
+    resources = [
+      aws_s3_bucket.gd_bucket.arn,
+      "${aws_s3_bucket.gd_bucket.arn}/AWSLogs/*"
+    ]
+    condition {
+      test     = "StringEquals"
+      variable = "s3:x-amz-acl"
+
+      values = [
+        "bucket-owner-full-control"
+      ]
+    }
+  }
 }
 
 # GD Findings bucket KMS CMK policy
