@@ -14,3 +14,17 @@ terraform init
 terraform destroy -auto-approve
 echo "Done !"
 cd ..
+
+echo "Destroying Logging account role"
+cd create-logging-acct-role
+terraform init
+terraform destroy -auto-approve
+echo "Done !"
+cd ..
+
+echo "Destroying Delegated admin role"
+cd create-delegatedadmin-acct-role
+terraform init
+terraform destroy -auto-approve
+echo "Done !"
+cd ..

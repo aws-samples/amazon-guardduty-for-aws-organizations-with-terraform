@@ -64,16 +64,16 @@ Terraform version v0.14.6
 
 - Create a DynamoDB table, with the appropriate name. The table's primary key should be LockID of type String (other settings at default values).
 
-#### IAM Roles creation in the Management, Logging/Compliance and Security accounts:
-- Update the variables.tf files under all the folders as appropriate. 
+#### IAM Roles creation:
+1) Update the variables.tf files under all the relevant folders as appropriate. 
 
-- Create a role in the Management account using the policy in management-account-policy.json. Set the temporary credentials for this role as environment variables for Access Key ID, Secret Access Key and Session Token.
+2) Create a role in the Management account using the policy in management-account-policy.json. Set the temporary credentials for this role as environment variables for Access Key ID, Secret Access Key and Session Token.
 
-- Use the attached *create-delegatedadmin-acct-role/create-role.tf* to create the *'GuardDutyTerraformOrgRole'* in the Security account (this account acts as the Delegated admin for GuardDuty). Provide the Management account id as input when doing *terraform apply*. 
+3) Use the attached *create-delegatedadmin-acct-role/create-role.tf* to create the *'GuardDutyTerraformOrgRole'* in the Security account (this account acts as the Delegated admin for GuardDuty). Provide the Management account id as input when doing *terraform apply*. 
 
-- Use the attached create-logging-acct-role/create-role.tf to create the *'GuardDutyTerraformOrgRole'* in the Logging/Compliance account (this account has the S3 bucket with GuardDuty findings). Provide the Management account id as input when doing *terraform apply*. 
+4) Use the attached create-logging-acct-role/create-role.tf to create the *'GuardDutyTerraformOrgRole'* in the Logging/Compliance account (this account has the S3 bucket with GuardDuty findings). Provide the Management account id as input when doing *terraform apply*. 
 
-- These roles in the Security and Logging accounts will have the Management account as Trusted Entity.
+5) These roles in the Security and Logging accounts will have the Management account as Trusted Entity.
 
 
 #### Terraform Variable Values:
@@ -106,7 +106,18 @@ Terraform version v0.14.6
     ```
 The default region is the first item (or the item at the 0th index) in the *target_regions* list.
 
-### Actual Steps
+### Scripts
+The scripts provided under scripts/ folder can be used to automate the entire process. The detailed actions have been elaborated under the [Steps to deploy](#steps-to-deploy) section. The following scripts have been provided:
+- **[scripts/create-roles.sh](scripts/create-roles.sh)**: 
+    - Script to create steps 3 and 4 of [IAM Roles creation](#iam-roles-creation)
+    - Step 1 of [IAM Roles creation](#iam-roles-creation) has to be done manually as a prerequisite
+- **[scripts/setup-gd.sh](scripts/setup-gd.sh)**:
+    - Script to implement actions in [Steps to deploy](#steps-to-deploy)
+    - There are still some manual steps to be done like filling in the variables.tf files and actions relating to importing the Organization
+- **[scripts/destroy-gd.sh](scripts/destroy-gd.sh)**:
+    - Script to delete all actions, except importing the org, from [Steps to deploy](#steps-to-deploy)
+
+### Steps to deploy
 1) Import the existing organization to Terraform state:
     - Run *terraform init* under the folder import-org/.
     - Run this command:
