@@ -109,8 +109,8 @@ The default region is the first item (or the item at the 0th index) in the *targ
 ### Scripts
 The scripts provided under scripts/ folder can be used to automate the entire process. The detailed actions have been elaborated under the [Steps to deploy](#steps-to-deploy) section. The following scripts have been provided:
 - **[scripts/create-roles.sh](scripts/create-roles.sh)**: 
-    - Script to create steps 3 and 4 of [IAM Roles creation](#iam-roles-creation)
-    - Step 1 of [IAM Roles creation](#iam-roles-creation) has to be done manually as a prerequisite
+    - Script to implement steps 3 and 4 of [IAM Roles creation](#iam-roles-creation)
+    - Steps 1 and 2 of [IAM Roles creation](#iam-roles-creation) have to be done manually as prerequisites
 - **[scripts/setup-gd.sh](scripts/setup-gd.sh)**:
     - Script to implement actions in [Steps to deploy](#steps-to-deploy)
     - There are still some manual steps to be done like filling in the variables.tf files and actions relating to importing the Organization
