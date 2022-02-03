@@ -1,10 +1,5 @@
 #!/bin/bash
 
-# Colour highlighting
-MAG='\033[0;35m'
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
-
 # Initialize terraform variables
 export TF_VAR_delegated_admin_acc_id=`cat configuration.json | jq -r ".delegated_admin_acc_id"`
 export TF_VAR_logging_acc_id=`cat configuration.json | jq -r ".logging_acc_id"`
@@ -19,35 +14,14 @@ export TF_VAR_logging_acc_s3_bucket_name=`cat configuration.json | jq -r ".loggi
 export TF_VAR_logging_acc_kms_key_alias=`cat configuration.json | jq -r ".logging_acc_kms_key_alias"`
 export TF_VAR_s3_access_log_bucket_name=`cat configuration.json | jq -r ".s3_access_log_bucket_name"`
 
-echo -e "${MAG}Destroying GuardDuty${NC}"
-cd enable-gd
-terraform init
-terraform destroy -auto-approve
-echo -e "${BLUE}Done !${NC}"
-echo ""
-cd ..
+# Initialize code files based on input configuration
+#
+bash scripts/generate-backend.sh
 
+# Create necessary roles in security and logging accounts
+#
+bash scripts/create-roles.sh
 
-echo -e "${MAG}Destroying GuardDuty Findings bucket and key${NC}"
-cd create-gd-bucket-and-key
-terraform init
-terraform destroy -auto-approve
-echo -e "${BLUE}Done !${NC}"
-echo ""
-cd ..
-
-echo -e "${MAG}Destroying Logging account role${NC}"
-cd create-logging-acct-role
-terraform init
-terraform destroy -auto-approve
-echo -e "${BLUE}Done !${NC}"
-echo ""
-cd ..
-
-echo -e "${MAG}Destroying Delegated admin role${NC}"
-cd create-delegatedadmin-acct-role
-terraform init
-terraform destroy -auto-approve
-echo -e "${BLUE}Done !${NC}"
-echo ""
-cd ..
+# Enable GD for the AWS Organizations
+#
+bash scripts/setup-gd.sh

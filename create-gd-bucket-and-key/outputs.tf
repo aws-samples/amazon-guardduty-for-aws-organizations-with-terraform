@@ -15,10 +15,6 @@
 #  OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 #  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# --------------------------------------------------------------------------------------------------
-# Outputs from guardduty-baseline module.
-# --------------------------------------------------------------------------------------------------
-
 output "guardduty_findings_bucket_arn" {
   description = "The GuardDuty findings bucket in the logging account"
   value       = module.gd_findings_bucket_and_key.guardduty_findings_bucket_arn

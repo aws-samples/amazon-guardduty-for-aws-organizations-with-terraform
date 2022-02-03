@@ -16,27 +16,9 @@
 
 terraform {
   backend "s3" {
-    bucket = "gd-tfm-remote-backend-1"
-    key    = "gd-logging-role.tfstate"
-    region = "ap-southeast-1"
-    dynamodb_table = "s3-state-lock"
-  }
-}
-
-data "terraform_remote_state" "guardduty_org" {
-  backend = "s3"
-
-  config = {
-    bucket = "gd-tfm-remote-backend-1"
+    bucket = <tfm_state_backend_s3_bucket>
     key    = "remoteorg.tfstate"
-    region = "ap-southeast-1"
+    region = <tfm_state_region>
+    dynamodb_table = <tfm_state_backend_dynamodb_table>
   }
-}
-
-data "aws_caller_identity" "primary_account" {
-  provider = aws.primary
-}
-
-data "aws_caller_identity" "logging_account" {
-  provider = aws
 }

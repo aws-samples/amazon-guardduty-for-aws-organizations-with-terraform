@@ -14,11 +14,6 @@
 #  OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 #  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# --------------------------------------------------------------------------------------------------
-# GuardDuty enabler root module
-# Needs to be set up in each region.
-# --------------------------------------------------------------------------------------------------
-
 # Create (one-time) the S3 bucket and KMS CMK for GuardDuty findings
 module "gd_findings_bucket_and_key" {
   source = "./modules/s3-bucket-create"
@@ -32,7 +27,7 @@ module "gd_findings_bucket_and_key" {
   kms_key_alias                                     = var.logging_acc_kms_key_alias
   s3_logging_bucket_name                            = var.logging_acc_s3_bucket_name
   s3_access_log_bucket_name                         = var.s3_access_log_bucket_name
-  default_region                                    = var.default_region
+  default_region                                    = var.guardduty_findings_bucket_region
   s3_bucket_object_transition_to_glacier_after_days = var.lifecycle_policy_days
   tags                                              = var.tags
 }

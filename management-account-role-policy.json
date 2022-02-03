@@ -44,7 +44,9 @@
             "Effect": "Allow",
             "Action": [
                 "guardduty:*",
-                "ec2:DescribeAccountAttributes"
+                "ec2:DescribeAccountAttributes",
+                "ssm:GetParametersByPath",
+                "ec2:DescribeRegions"
             ],
             "Resource": "*"
         },

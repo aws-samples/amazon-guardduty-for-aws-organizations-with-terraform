@@ -17,7 +17,13 @@ resource "aws_guardduty_detector" "MyDetector" {
 
   enable                       = true
   finding_publishing_frequency = var.gd_finding_publishing_frequency
-
+  
+  # Additional setting to turn on S3 Protection
+  datasources {
+    s3_logs {
+      enable = true
+    }
+  }
   tags = var.tags
 }
 
@@ -41,6 +47,13 @@ resource "aws_guardduty_organization_configuration" "MyGDOrg" {
 
   auto_enable = true
   detector_id = aws_guardduty_detector.MyDetector[0].id
+  
+  # Additional setting to turn on S3 Protection
+  datasources {
+    s3_logs {
+      auto_enable = true
+    }
+  }
 }
 
 # GuardDuty members in the Delegated admin account

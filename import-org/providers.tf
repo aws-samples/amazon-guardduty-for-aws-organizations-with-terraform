@@ -16,5 +16,5 @@
 
 provider "aws" {
   alias = "src"
-  region = var.tfm_state_region
+  region = var.default_region
 }

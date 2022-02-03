@@ -14,7 +14,6 @@
 #  OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 #  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-variable "tfm_state_region" {
-  description = "Region where terraform backend state is to be stored"
-  default = "ap-southeast-1"
+variable "default_region" {
+  description = "Default region of operation"
 }

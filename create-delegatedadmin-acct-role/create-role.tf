@@ -54,7 +54,8 @@ data "aws_iam_policy_document" "security_acct_pol" {
       "guardduty:InviteMembers",
       "guardduty:DeleteMembers",
       "guardduty:GetMembers",
-      "ec2:DescribeAccountAttributes"
+      "ec2:DescribeAccountAttributes",
+      "ec2:DescribeRegions"
     ]
 
     resources = [

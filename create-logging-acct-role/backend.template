@@ -1,4 +1,3 @@
-
 #  Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #  SPDX-License-Identifier: MIT-0
 
@@ -17,9 +16,19 @@
 
 terraform {
   backend "s3" {
-    bucket = "gd-tfm-remote-backend-1"
-    key    = "gd-findings-store.tfstate"
-    region = "ap-southeast-1"
-    dynamodb_table = "s3-state-lock"
+    bucket = <tfm_state_backend_s3_bucket>
+    key    = "gd-logging-role.tfstate"
+    region = <tfm_state_region>
+    dynamodb_table = <tfm_state_backend_dynamodb_table>
   }
 }
+
+data "aws_caller_identity" "primary_account" {
+  provider = aws.primary
+}
+
+data "aws_caller_identity" "logging_account" {
+  provider = aws
+}
+
+

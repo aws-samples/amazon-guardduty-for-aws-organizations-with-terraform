@@ -15,13 +15,8 @@
 #  OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 #  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# --------------------------------------------------------------------------------------------------
-# A list of providers for all AWS regions.
-# Reference: https://docs.aws.amazon.com/general/latest/gr/rande.html
-# --------------------------------------------------------------------------------------------------
-
 provider "aws" {
-  region = var.default_region
+  region = var.guardduty_findings_bucket_region
   alias  = "default"
   assume_role {
     role_arn = "arn:aws:iam::${var.logging_acc_id}:role/${var.assume_role_name}"

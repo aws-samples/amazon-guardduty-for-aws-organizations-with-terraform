@@ -25,6 +25,9 @@ variable "tags" {
 }
 
 variable "default_region" {
-  description = "A list of regions to set up with this module."
-  default = "ap-southeast-1"
+  description = "Default region of operation"
+}
+
+variable "role_to_assume_for_role_creation" {
+  description = "Terraform will assume this IAM role to create the infra in this module"
 }

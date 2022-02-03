@@ -15,13 +15,13 @@
 #  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 provider "aws" {
-  region = "ap-southeast-1"
+  region = var.default_region
   assume_role {
-    role_arn = "arn:aws:iam::${var.logging_acc_id}:role/OrganizationAccountAccessRole"
+    role_arn = "arn:aws:iam::${var.logging_acc_id}:role/${var.role_to_assume_for_role_creation}"
   }
 }
 
 provider "aws" {
-  region = "ap-southeast-1"
+  region = var.default_region
   alias = "primary"
 }

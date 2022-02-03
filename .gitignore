@@ -38,3 +38,5 @@ debug.log
 *.lock.hcl
 
 .DS_Store
+
+configuration.json

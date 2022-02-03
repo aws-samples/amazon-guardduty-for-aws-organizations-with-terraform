@@ -1,3 +1,4 @@
+
 #  Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #  SPDX-License-Identifier: MIT-0
 
@@ -16,30 +17,9 @@
 
 terraform {
   backend "s3" {
-    bucket = "gd-tfm-remote-backend-1"
-    key    = "gd.tfstate"
-    region = "ap-southeast-1"
-    dynamodb_table = "s3-state-lock"
-  }
-}
-
-
-data "terraform_remote_state" "guardduty_org" {
-  backend = "s3"
-
-  config = {
-    bucket = "gd-tfm-remote-backend-1"
-    key    = "remoteorg.tfstate"
-    region = "ap-southeast-1"
-  }
-}
-
-data "terraform_remote_state" "guardduty_findings_store" {
-  backend = "s3"
-
-  config = {
-    bucket = "gd-tfm-remote-backend-1"
+    bucket = <tfm_state_backend_s3_bucket>
     key    = "gd-findings-store.tfstate"
-    region = "ap-southeast-1"
+    region = <tfm_state_region>
+    dynamodb_table = <tfm_state_backend_dynamodb_table>
   }
 }

@@ -25,3 +25,11 @@ variable "tags" {
   default = {
   }
 }
+
+variable "default_region" {
+  description = "Default region of operation"
+}
+
+variable "role_to_assume_for_role_creation" {
+  description = "Terraform will assume this IAM role to create the infra in this module"
+}

@@ -23,9 +23,8 @@ variable "assume_role_name" {
   default = "GuardDutyTerraformOrgRole"
 }
 
-variable "default_region" {
-  description = "A list of regions to set up with this module."
-  default = "ap-southeast-1"
+variable "guardduty_findings_bucket_region" {
+  description = "Default region to create the bucket and key"
 }
 
 variable "tags" {
@@ -36,12 +35,10 @@ variable "tags" {
 
 variable "logging_acc_kms_key_alias" {
   description = "Alias of the KMS key in logging account, to be used for encrypting logs at rest in s3 bucket"
-  default = "gd-org-logging-acc-kms-key"
 }
 
 variable "logging_acc_s3_bucket_name" {
   description = "Name of S3 bucket to store logs in the logging account"
-  default = "gd-org-logging-acc-s3-logs-bucket"
 }
 
 variable "lifecycle_policy_days" {

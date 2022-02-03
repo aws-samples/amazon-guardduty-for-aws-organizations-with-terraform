@@ -20,6 +20,9 @@ resource "aws_organizations_organization" "my_org" {
   feature_set = "ALL"
 
   aws_service_access_principals = [
-    "guardduty.amazonaws.com"
+    "guardduty.amazonaws.com",
+    "config-multiaccountsetup.amazonaws.com",
+    "securityhub.amazonaws.com",
+    "config.amazonaws.com"
   ]
 }

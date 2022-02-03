@@ -1,3 +1,4 @@
+
 #  Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #  SPDX-License-Identifier: MIT-0
 
@@ -14,29 +15,28 @@
 #  OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 #  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# --------------------------------------------------------------------------------------------------
-# Outputs from guardduty-baseline module.
-# --------------------------------------------------------------------------------------------------
 
 output "guardduty_detector" {
   description = "The GuardDuty detector in each region."
 
   value = {
-    "ap-northeast-1" = module.guardduty_baseline_ap-northeast-1.guardduty_detector
+    "ap-northeast-3" = module.guardduty_baseline_ap-northeast-3.guardduty_detector
+    "us-east-2" = module.guardduty_baseline_us-east-2.guardduty_detector
+    "us-east-1" = module.guardduty_baseline_us-east-1.guardduty_detector
     "ap-northeast-2" = module.guardduty_baseline_ap-northeast-2.guardduty_detector
-    "ap-south-1"     = module.guardduty_baseline_ap-south-1.guardduty_detector
-    "ap-southeast-1" = module.guardduty_baseline_ap-southeast-1.guardduty_detector
+    "eu-west-2" = module.guardduty_baseline_eu-west-2.guardduty_detector
+    "eu-west-3" = module.guardduty_baseline_eu-west-3.guardduty_detector
+    "ap-south-1" = module.guardduty_baseline_ap-south-1.guardduty_detector
     "ap-southeast-2" = module.guardduty_baseline_ap-southeast-2.guardduty_detector
-    "ca-central-1"   = module.guardduty_baseline_ca-central-1.guardduty_detector
-    "eu-central-1"   = module.guardduty_baseline_eu-central-1.guardduty_detector
-    "eu-north-1"     = module.guardduty_baseline_eu-north-1.guardduty_detector
-    "eu-west-1"      = module.guardduty_baseline_eu-west-1.guardduty_detector
-    "eu-west-2"      = module.guardduty_baseline_eu-west-2.guardduty_detector
-    "sa-east-1"      = module.guardduty_baseline_sa-east-1.guardduty_detector
-    "us-east-1"      = module.guardduty_baseline_us-east-1.guardduty_detector
-    "us-east-2"      = module.guardduty_baseline_us-east-2.guardduty_detector
-    "us-west-1"      = module.guardduty_baseline_us-west-1.guardduty_detector
-    "us-west-2"      = module.guardduty_baseline_us-west-2.guardduty_detector
+    "ap-southeast-1" = module.guardduty_baseline_ap-southeast-1.guardduty_detector
+    "eu-north-1" = module.guardduty_baseline_eu-north-1.guardduty_detector
+    "us-west-2" = module.guardduty_baseline_us-west-2.guardduty_detector
+    "us-west-1" = module.guardduty_baseline_us-west-1.guardduty_detector
+    "ap-northeast-1" = module.guardduty_baseline_ap-northeast-1.guardduty_detector
+    "eu-central-1" = module.guardduty_baseline_eu-central-1.guardduty_detector
+    "eu-west-1" = module.guardduty_baseline_eu-west-1.guardduty_detector
+    "sa-east-1" = module.guardduty_baseline_sa-east-1.guardduty_detector
+    "ca-central-1" = module.guardduty_baseline_ca-central-1.guardduty_detector
+
   }
 }
-
