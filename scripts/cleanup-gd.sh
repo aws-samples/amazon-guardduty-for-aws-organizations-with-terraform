@@ -1,5 +1,25 @@
 #!/bin/bash
 
+#  Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#  SPDX-License-Identifier: MIT-0
+
+#  Permission is hereby granted, free of charge, to any person obtaining a copy of this
+#  software and associated documentation files (the "Software"), to deal in the Software
+#  without restriction, including without limitation the rights to use, copy, modify,
+#  merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
+#  permit persons to whom the Software is furnished to do so.
+
+#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+#  INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+#  PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+#  HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+#  OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+#  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+#######################################################################
+## Script to cleanup all the resources setup with scripts/full-setup.sh
+#######################################################################
+
 # Colour highlighting
 MAG='\033[0;35m'
 BLUE='\033[0;34m'
@@ -19,7 +39,7 @@ export TF_VAR_logging_acc_s3_bucket_name=`cat configuration.json | jq -r ".loggi
 export TF_VAR_logging_acc_kms_key_alias=`cat configuration.json | jq -r ".logging_acc_kms_key_alias"`
 export TF_VAR_s3_access_log_bucket_name=`cat configuration.json | jq -r ".s3_access_log_bucket_name"`
 
-echo -e "${MAG}Destroying GuardDuty${NC}"
+echo -e "${MAG}Cleaning up GuardDuty${NC}"
 cd enable-gd
 terraform init
 terraform destroy -auto-approve
@@ -28,7 +48,7 @@ echo ""
 cd ..
 
 
-echo -e "${MAG}Destroying GuardDuty Findings bucket and key${NC}"
+echo -e "${MAG}Cleaning up GuardDuty Findings bucket and key${NC}"
 cd create-gd-bucket-and-key
 terraform init
 terraform destroy -auto-approve
@@ -36,7 +56,7 @@ echo -e "${BLUE}Done !${NC}"
 echo ""
 cd ..
 
-echo -e "${MAG}Destroying Logging account role${NC}"
+echo -e "${MAG}Cleaning up Logging account role${NC}"
 cd create-logging-acct-role
 terraform init
 terraform destroy -auto-approve
@@ -44,7 +64,7 @@ echo -e "${BLUE}Done !${NC}"
 echo ""
 cd ..
 
-echo -e "${MAG}Destroying Delegated admin role${NC}"
+echo -e "${MAG}Cleaning up Delegated admin role${NC}"
 cd create-delegatedadmin-acct-role
 terraform init
 terraform destroy -auto-approve

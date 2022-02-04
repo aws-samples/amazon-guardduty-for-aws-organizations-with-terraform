@@ -6,7 +6,7 @@
     "default_region" : "<DEFAULT-REGION-OF-OPERATION>",
     "role_to_assume_for_role_creation" : "<NAME-OF-ROLE>",
 
-    "finding_publishing_frequency" : "FIFTEEN_MINUTES",
+    "finding_publishing_frequency" : "FIFTEEN_MINUTES" <Can be customized>,
     "guardduty_findings_bucket_region" : "<GUARDDUTY-BUCKET-REGION>",
     "logging_acc_s3_bucket_name" : "<GUARDDUTY-BUCKET-NAME>",
     "logging_acc_kms_key_alias" : "<KMS-ALIAS>",
