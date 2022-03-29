@@ -2,7 +2,7 @@
     "Version": "2012-10-17",
     "Statement": [
         {
-            "Sid": "TFM-Remote-State",
+            "Sid": "TFMRemoteState",
             "Effect": "Allow",
             "Action": [
                 "s3:PutObject",
@@ -17,7 +17,7 @@
             ]
         },
         {
-            "Sid": "TFM-Remote-Lock-Table",
+            "Sid": "TFMRemoteLockTable",
             "Effect": "Allow",
             "Action": [
                 "dynamodb:PutItem",
@@ -48,7 +48,12 @@
                 "ssm:GetParametersByPath",
                 "ec2:DescribeRegions"
             ],
-            "Resource": "*"
+            "Resource": "*",
+            "Condition": {
+                "StringEquals": {
+                    "aws:PrincipalOrgId": ["<Enter your Org ID here>"]
+                }
+            }
         },
         {
             "Sid": "OrgPerms",
@@ -65,7 +70,12 @@
                 "organizations:ListAccounts",
                 "organizations:ListRoots"
             ],
-            "Resource": "*"
+            "Resource": "*",
+            "Condition": {
+                "StringEquals": {
+                    "aws:PrincipalOrgId": ["<Enter your Org ID here>"]
+                }
+            }
         },
         {
             "Sid": "IAMRoleCreate",
