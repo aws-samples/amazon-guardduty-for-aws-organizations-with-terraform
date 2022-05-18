@@ -1,99 +1,24 @@
 
-## Implementing Amazon GuardDuty for AWS Organizations organization using Terraform
+# Implementing Amazon GuardDuty for AWS Organizations organization using Terraform
 
-#### Version 1.1.0
+Amazon GuardDuty continuously monitors your Amazon Web Services (AWS) accounts and uses threat intelligence to identify unexpected and potentially malicious activity within your AWS environment. Manually enabling GuardDuty for multiple accounts or organizations, across multiple AWS Regions, or through the AWS Management Console can be cumbersome. You can automate the process by using an infrastructure as code (IaC) tool, such as Terraform, which can provision and manage multi-account, multi-Region services and resources in the cloud.
+AWS recommends using AWS Organizations to set up and manage multiple accounts in GuardDuty. This pattern adheres to that recommendation. One benefit of this approach is that, when new accounts are created or added to the organization, GuardDuty will be auto-enabled in these accounts for all supported Regions, without the need for manual intervention.
+This pattern demonstrates how to use HashiCorp Terraform to enable Amazon GuardDuty for three or more Amazon Web Services (AWS) accounts in an organization. The sample code provided as open-source with thise pattern does the following:
+•	Enables GuardDuty for all AWS accounts that are current members of the target organization in AWS Organizations
+•	Turns on the Auto-Enable feature in GuardDuty, which automatically enables GuardDuty for any accounts that are added to the target organization in the future
+•	Allows you select the Regions where you want to enable GuardDuty
+•	Uses the organization’s security account as the GuardDuty delegated administrator
+•	Creates an Amazon Simple Storage Service (Amazon S3) bucket in the logging account and configures GuardDuty to publish the aggregated findings from all accounts in this bucket
+•	Assigns a life-cycle policy that transitions findings from the S3 bucket to Amazon S3 Glacier Flexible Retrieval storage after 365 days, by default 
+You can manually run this sample code, or you can integrate it into your continuous integration and continuous delivery (CI/CD) pipeline.
 
-### Abstract
-Sample Infrastructure-as-Code in Terraform to enable Amazon GuardDuty for the given AWS Organizations organization. This artefact uses the Auto-Enable feature of GuardDuty to enrol newly created member accounts into GuardDuty's administration structure, while also turning on GuardDuty in all existing members. This artefact does not use the Member-invite based method.
+The code in this repository helps you set up the following target architecture.
 
-A runbook with steps to turn off Amazon GuardDuty which was setup using the Member-Invite based method has been provided (Runbook-for-turning-off-Amazon-GuardDuty-in-Member-Invite-method.docx). This can be used to turn off the Member-invite based model before using the given codebase to deploy GuardDuty using the Organizations-based method. 
+![Target architecture diagram](GuardDutyDeployment.jpg)
 
-Additional features include:
-- Allows for the Security account as the Delegated Admin 
-- Creates the Amazon S3 bucket and AWS KMS key to publish findings in the Logging/Compliance Account, along with lifecycle policy to transition to Amazon S3 Glacier
-- Allows selecting regions to enable GuardDuty
+For prerequisites and instructions for using this AWS Prescriptive Guidance pattern, see [Use Terraform to automatically enable Amazon GuardDuty for an organization](https://docs.aws.amazon.com/prescriptive-guidance/latest/patterns/use-terraform-to-automatically-enable-amazon-guardduty-for-an-organization.html).
 
-### Target Audience
-Security Engineers/Admins, Landing zone admins who want to deploy GuardDuty across multiple regions within an organization using Terraform.
-
-### Prerequisites
-
-You will need to complete the following prerequisites before proceeding with the steps to setup:
-
-1) Terraform:
-Terraform installed and ready to use. Follow the steps under https://www.Terraform.io/downloads.html for installation. The sample code provided has been tested with Terraform version v0.14.6
-
-2) Python:
-Python is used for generating Terraform code to identify all the allowed regions where GuardDuty can be enabled in the Delegated Administrator account. The sample code provided has been tested with Python v3.9.6.
-
-3) Terraform State Remote Backend:
-    - Create an S3 bucket for storing Terraform's remote backend state. Set the name as value for the configuration field "tfm_state_backend_s3_bucket" in [configuration.json.sample](configuration.json.sample).
-
-    - Create an Amazon DynamoDB table, with the appropriate name in the same region as the S3 bucket. The table's primary key should be LockID of type String (other settings at default values). Set the name as value for the configuration field "tfm_state_backend_dynamodb_table" in [configuration.json.sample](configuration.json.sample).
-
-4) Others:
-    - GuardDuty should not already be enabled in any of the accounts, in any of the chosen regions.
-    - An AWS Organizations organization with minimally three AWS accounts - designated as Management, Security and Logging accounts as per AWS Landing Zone best practices
-        - A Management account: this is the account from which you will deploy the Terraform code, either stand-alone or as part of the CI/CD pipeline
-        - A Security services account: this is the Delegated Admin for GuardDuty
-        - A Logging account: this account houses the S3 bucket where the GuardDuty service will upload findings, if any
-
-### Steps to setup
-
-1) IAM Roles:
-
-    - The setup process has to be run from the Management account of the organization with a dedicated IAM role created for this purpose. Create an IAM role in the Management account with the restricted policies provided [here](https://github.com/aws-samples/amazon-guardduty-for-aws-organizations-with-terraform/blob/main/management-account-role-policy.json). This role has the permissions for the entity (human or CI/CD pipeline) in the Management account to perform the rest of the actions required to enable GuardDuty in that organization using Terraform.  
-
-    - Create IAM roles in the Security and Logging accounts with permissions to "Create IAM Role, IAM policy and attach policies". The management account should be set as Trusted Principal for both the roles. The setup assumes that both roles have the same 'name', which is then set as value for the configuration field "role_to_assume_for_role_creation" in [configuration.json.sample](configuration.json.sample). The Terraform code assumes these roles to create dedicated IAM roles in the Security and Logging accounts. Alternatively, the OrganizationAccountAccessRole (if present) can also be used for this instead.
-
-2) Terraform Variable Values:
-
-    - All Terraform Variables are exported as [environment variables](https://www.terraform.io/language/values/variables#environment-variables) with the prefix 'TF_VAR_' before the Terraform code execution begins.
-    - Fill in the appropriate values for all the fields in [configuration.json.sample](configuration.json.sample). Rename the file as **configuration.json**. The various configuration items are explained below:
-
-    ```json
-    {
-        "delegated_admin_acc_id" : Account ID for the Security Account,
-        "logging_acc_id" : Account ID for the Logging Account,
-        "target_regions" : Comma-separated list of AWS regions where GuardDuty is to be enabled,
-        "organization_id" : AWS Organizations ID for the organization where GuardDuty is to be enabled,
-        "default_region" : Default region of operation,
-        "role_to_assume_for_role_creation" : IAM role name in the Security and Logging accounts, that will be assumed to create the necessary Guardduty roles; same name to be used in both accounts,   
-        "finding_publishing_frequency" : Frequency at which GuardDuty findings are published,
-        "guardduty_findings_bucket_region" : Preferred region where the GuardDuty publishing destination S3 bucket is to be created,
-        "logging_acc_s3_bucket_name" : Preferred name for the GuardDuty publishing destination S3 bucket,
-        "logging_acc_kms_key_alias" : AWS KMS CMK alias for the key used to encrypt GuardDuty findings,
-        "s3_access_log_bucket_name" : Name of a pre-existing S3 bucket to be used for collecting access logs for the GuardDuty publishing destination S3 bucket,
-        "tfm_state_backend_s3_bucket" : Name of the pre-existing S3 bucket to store Terraform's remote backend state,
-        "tfm_state_backend_dynamodb_table" : Name of the pre-existing DynamoDB table for locking Terraform state,
-        "tfm_state_region" : AWS Region where both the remote backend state S3 bucket and DynamoDB table are present
-    }
-    ```
-
-3) Setup all resources:
-
-    From the project root folder run the following command via CLI or as part of the build specifications:
-    ```bash
-    bash scripts/full-setup.sh
-    ```
-    This sets up all the IAM roles, configures the environment variables with values from step 2, generates code for the backend.tf files, imports the organization into Terraform state and generates code for enabling GuardDuty in the allowed regions.
-
-### Clean-up
-1) From the project root folder run the following command via CLI:
-    ```bash
-    bash scripts/cleanup-gd.sh
-    ```
-All previously deployed resources will be cleaned-up, except for the organization state that was imported into the *[import-org](import-org/)* Terraform module's state.
-
-### Region Selection for enabling GuardDuty
-
-1) AWS GuardDuty is available in several regions. This is obtained as a list via an API call in the Python script.
-2) The Delegated Administrator account has its own list of allowed regions i.e., regions which are not *disabled* and are either opted in by the account owner or opt-in is not required. This is obtained as a separate list via another API call.
-3) The intersection of the lists from (2) and (3) provide us with an "allowed list" of regions where GuardDuty can be enabled without errors. 
-4) There is a configuration field "target_regions" in [configuration.json.sample](configuration.json.sample) which is a comma-separated list of preferred regions where GuardDuty needs to be enabled in the current organization. Each region specified in the "target_regions" configuration is compared with the "allowed list" from (3) before proceeding to enable GuardDuty in those preferred regions.
-
-### Detailed Code Documentation
-
+### Detailed Documentation
 #### Components Included
 - Terraform Code *import-org* - to store the resource config of the imported AWS Organization
 - Terraform Code *create-delegatedadmin-acct-role* - to create role for the Management account to assume in the Security account
@@ -135,6 +60,12 @@ The following outputs are generated from the module *tfm-gd-enabler*:
 - guardduty_detector - The GuardDuty detector ID in each region.
 
 #### Additional Notes
+#### Region Selection for enabling GuardDuty
+1) AWS GuardDuty is available in several regions. This is obtained as a list via an API call in the Python script.
+2) The Delegated Administrator account has its own list of allowed regions i.e., regions which are not *disabled* and are either opted in by the account owner or opt-in is not required. This is obtained as a separate list via another API call.
+3) The intersection of the lists from (2) and (3) provide us with an "allowed list" of regions where GuardDuty can be enabled without errors. 
+4) There is a configuration field "target_regions" in [configuration.json.sample](configuration.json.sample) which is a comma-separated list of preferred regions where GuardDuty needs to be enabled in the current organization. Each region specified in the "target_regions" configuration is compared with the "allowed list" from (3) before proceeding to enable GuardDuty in those preferred regions.
+
 ##### How to add support for new regions to deploy GuardDuty?
 Add the new region(s) to the "target_region" configuration field in [configuration.json.sample](configuration.json.sample) file and follow the steps in [Steps to setup](#steps-to-setup)
 
