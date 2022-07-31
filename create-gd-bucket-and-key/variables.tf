@@ -20,7 +20,7 @@ variable "logging_acc_id" {
 
 variable "assume_role_name" {
   description = "The role to assume in the delegated admin account."
-  default = "GuardDutyTerraformOrgRole"
+  default     = "GuardDutyTerraformOrgRole"
 }
 
 variable "guardduty_findings_bucket_region" {
@@ -47,6 +47,6 @@ variable "lifecycle_policy_days" {
 }
 
 variable "s3_access_log_bucket_name" {
-  type = string
+  type        = string
   description = "Bucket to store access logs for GD bucket"
 }

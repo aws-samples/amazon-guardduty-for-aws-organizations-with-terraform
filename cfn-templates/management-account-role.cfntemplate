@@ -1,0 +1,116 @@
+#  Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#  SPDX-License-Identifier: MIT-0
+
+#  Permission is hereby granted, free of charge, to any person obtaining a copy of this
+#  software and associated documentation files (the "Software"), to deal in the Software
+#  without restriction, including without limitation the rights to use, copy, modify,
+#  merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
+#  permit persons to whom the Software is furnished to do so.
+
+#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+#  INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+#  PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+#  HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+#  OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+#  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+AWSTemplateFormatVersion: '2010-09-09'
+Description: This CloudFormation Template can be used create the role in the management account whose session should be used to run terraform adhering to principle of least privileges
+Resources:
+  ManagementAccountRole:
+    Type: AWS::IAM::Role
+    Metadata:
+      cfn_nag:
+          rules_to_suppress:
+            - id: F3
+              reason: "Guardduty permissions cannot be restricted by specific resources"
+            - id: W11
+              reason: "Guardduty permissions cannot be restricted by specific resources"
+    Properties:
+      RoleName: "gdMgmtAccRole"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS:
+                - "arn:aws:iam::<management_acc_id>:root"
+            Action:
+              - "sts:AssumeRole"
+      Policies:
+        - PolicyName: RoleCreationPermissions
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Sid: TFMRemoteState
+                Effect: Allow
+                Action:
+                  - s3:PutObject
+                  - s3:GetObjectAcl
+                  - s3:GetObject
+                  - s3:ListBucket
+                  - s3:DeleteObject
+                Resource:
+                  - "arn:aws:s3:::<tfm_state_backend_s3_bucket>"
+                  - "arn:aws:s3:::<tfm_state_backend_s3_bucket>/*"
+              - Sid: TFMRemoteLockTable
+                Effect: Allow
+                Action:
+                  - dynamodb:PutItem
+                  - dynamodb:DeleteItem
+                  - dynamodb:GetItem
+                Resource:
+                  - "arn:aws:dynamodb:<tfm_state_region>:<management_acc_id>:table/<tfm_state_backend_dynamodb_table>"
+              - Sid: RoleRelated
+                Effect: Allow
+                Action:
+                  - sts:AssumeRole
+                  - sts:GetCallerIdentity
+                Resource:
+                  - arn:aws:iam::<delegated_admin_acc_id>:role/GuardDutyTerraformOrgRole
+                  - arn:aws:iam::<logging_acc_id>:role/GuardDutyTerraformOrgRole
+                  - arn:aws:iam::<delegated_admin_acc_id>:role/OrganizationAccountAccessRole
+                  - arn:aws:iam::<logging_acc_id>:role/OrganizationAccountAccessRole
+                  - arn:aws:iam::<delegated_admin_acc_id>:role/<role_to_assume_for_role_creation>
+                  - arn:aws:iam::<logging_acc_id>:role/<role_to_assume_for_role_creation>
+              - Sid: GdInOrg
+                Effect: Allow
+                Action:
+                  - guardduty:*
+                  - ec2:DescribeAccountAttributes
+                  - ssm:GetParametersByPath
+                  - ec2:DescribeRegions
+                Resource: "*"
+                Condition:
+                  StringEquals:
+                    aws:PrincipalOrgId:
+                      - "<organization_id>"
+              - Sid: OrgPerms
+                Effect: Allow
+                Action:
+                  - organizations:EnableAWSServiceAccess
+                  - organizations:DisableAWSServiceAccess
+                  - organizations:RegisterDelegatedAdministrator
+                  - organizations:ListDelegatedAdministrators
+                  - organizations:ListAWSServiceAccessForOrganization
+                  - organizations:DescribeOrganizationalUnit
+                  - organizations:DescribeAccount
+                  - organizations:DescribeOrganization
+                  - organizations:ListAccounts
+                  - organizations:ListRoots
+                Resource: "*"
+                Condition:
+                  StringEquals:
+                    aws:PrincipalOrgId:
+                      - "<organization_id>"
+              - Sid: IAMRoleCreate
+                Effect: Allow
+                Action: iam:CreateServiceLinkedRole
+                Resource: arn:aws:iam::*:role/aws-service-role/*guardduty.amazonaws.com/*
+                Condition:
+                  StringLike:
+                    iam:AWSServiceName: guardduty.amazonaws.com
+              - Sid: IAMRoleGet
+                Effect: Allow
+                Action: iam:GetRole
+                Resource: arn:aws:iam::*:role/aws-service-role/*guardduty.amazonaws.com/*

@@ -1,4 +1,3 @@
-
 #  Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #  SPDX-License-Identifier: MIT-0
 
@@ -15,15 +14,9 @@
 #  OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 #  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+logging_acc_id=<logging_acc_id>
 
-provider "aws" {
-  region = var.default_region
-  assume_role {
-    role_arn = "arn:aws:iam::${var.delegated_admin_acc_id}:role/${var.role_to_assume_for_role_creation}"
-  }
-}
-
-provider "aws" {
-  region = var.default_region
-  alias  = "primary"
-}
+guardduty_findings_bucket_region=<guardduty_findings_bucket_region>
+logging_acc_kms_key_alias=<logging_acc_kms_key_alias>
+logging_acc_s3_bucket_name=<logging_acc_s3_bucket_name>
+s3_access_log_bucket_name=<s3_access_log_bucket_name>

@@ -1,0 +1,66 @@
+#  Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#  SPDX-License-Identifier: MIT-0
+
+#  Permission is hereby granted, free of charge, to any person obtaining a copy of this
+#  software and associated documentation files (the "Software"), to deal in the Software
+#  without restriction, including without limitation the rights to use, copy, modify,
+#  merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
+#  permit persons to whom the Software is furnished to do so.
+
+#  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+#  INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+#  PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+#  HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+#  OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+#  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+AWSTemplateFormatVersion: '2010-09-09'
+Description: This CloudFormation Template can be used create the role to assume for role creations in security and logging accounts
+
+Resources:
+  RoleToAssumeForRoleCreation:
+    Type: AWS::IAM::Role
+    Metadata:
+      cfn_nag:
+          rules_to_suppress:
+            - id: W28
+              reason: "The rolename is required in this resource as the name is user-defined"
+            - id: W11
+              reason: "IAM permissions in this case cannot be restricted by specific resources"
+    Properties:
+      RoleName: "<role_to_assume_for_role_creation>"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS:
+                - "arn:aws:iam::<management_acc_id>:root"
+            Action:
+              - "sts:AssumeRole"
+      Policies:
+        - PolicyName: RoleCreationPermissions
+          PolicyDocument:
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - "iam:CreatePolicy"
+                  - "iam:CreateRole"
+                  - "iam:AttachRolePolicy"
+                  - "iam:CreatePolicyVersion"
+                  - "iam:GetPolicy"
+                  - "iam:GetRole"
+                  - "iam:ListRolePolicies"
+                  - "iam:GetPolicyVersion"
+                  - "iam:ListAttachedRolePolicies"
+                  - "iam:ListPolicyVersions"
+                  - "iam:ListInstanceProfilesForRole"
+                  - "iam:DeletePolicy"
+                  - "iam:DeleteRole"
+                  - "iam:DeletePolicyVersion"
+                  - "iam:DeleteRolePolicy"
+                  - "iam:DetachRolePolicy"
+                Resource: "*"
+                Condition:
+                  StringEquals:
+                    aws:PrincipalOrgID: "<organization_id>"

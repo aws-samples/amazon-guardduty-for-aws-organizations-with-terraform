@@ -41,6 +41,11 @@ echo -e "${BLUE}Done !${NC}"
 echo ""
 cd ..
 
+# Replace the guardduty findings bucket name stub with value from configuration file in create-logging-acct-role/create-role.tf
+#
+logging_acc_s3_bucket_name=`cat configuration.json | jq '.logging_acc_s3_bucket_name'`
+cp create-logging-acct-role/create-role.template create-logging-acct-role/create-role.tf
+sed -i="" "s/<logging_acc_s3_bucket_name>/${logging_acc_s3_bucket_name}/" create-logging-acct-role/create-role.tf
 
 echo -e "${MAG}Creating the Logging account role${NC}"
 cd create-logging-acct-role

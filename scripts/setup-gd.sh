@@ -53,7 +53,7 @@ cd ..
 #
 delegated_admin_acc_id=`cat configuration.json | jq -r ".delegated_admin_acc_id"`
 cd create-delegatedadmin-acct-role
-role_to_assume=`terraform output -json security_acct_role_to_assume | jq -r`
+role_to_assume=`terraform output -json security_acct_role_to_assume`
 cd ..
 python3 enable-gd/build-template.py $delegated_admin_acc_id $role_to_assume
 

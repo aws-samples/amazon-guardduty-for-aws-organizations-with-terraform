@@ -22,3 +22,7 @@ provider "aws" {
     role_arn = "arn:aws:iam::${var.logging_acc_id}:role/${var.assume_role_name}"
   }
 }
+
+provider "aws" {
+  region = var.guardduty_findings_bucket_region
+}

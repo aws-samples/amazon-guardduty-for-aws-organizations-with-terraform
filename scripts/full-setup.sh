@@ -38,6 +38,10 @@ export TF_VAR_s3_access_log_bucket_name=`cat configuration.json | jq -r ".s3_acc
 #
 bash scripts/generate-backend.sh
 
+# Create the .tfvar files
+#
+bash scripts/generate-tfvars.sh
+
 # Create necessary roles in security and logging accounts
 #
 bash scripts/create-roles.sh

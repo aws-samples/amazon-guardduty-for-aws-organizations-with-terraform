@@ -62,6 +62,22 @@ data "aws_iam_policy_document" "security_acct_pol" {
       "*"
     ]
   }
+  statement {
+    sid       = "AllowIamPerms"
+    effect    = "Allow"
+    actions   = ["iam:GetRole"]
+    resources = ["arn:aws:iam::*:role/aws-service-role/*guardduty.amazonaws.com/*"]
+  }
+  statement {
+    sid       = "AllowSvcLinkedRolePerms"
+    actions   = ["iam:CreateServiceLinkedRole"]
+    resources = ["arn:aws:iam::*:role/aws-service-role/*guardduty.amazonaws.com/*"]
+    condition {
+      test     = "StringLike"
+      variable = "iam:AWSServiceName"
+      values   = ["guardduty.amazonaws.com"]
+    }
+  }
 }
 
 resource "aws_iam_policy" "gd_terraform_security_acct_policy" {
