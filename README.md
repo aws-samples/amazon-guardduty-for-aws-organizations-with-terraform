@@ -1,15 +1,23 @@
 
-# Implementing Amazon GuardDuty for AWS Organizations organization using Terraform
+# Use Terraform to automatically enable Amazon GuardDuty for an organization
 
 Amazon GuardDuty continuously monitors your Amazon Web Services (AWS) accounts and uses threat intelligence to identify unexpected and potentially malicious activity within your AWS environment. Manually enabling GuardDuty for multiple accounts or organizations, across multiple AWS Regions, or through the AWS Management Console can be cumbersome. You can automate the process by using an infrastructure as code (IaC) tool, such as Terraform, which can provision and manage multi-account, multi-Region services and resources in the cloud.
+
 AWS recommends using AWS Organizations to set up and manage multiple accounts in GuardDuty. This pattern adheres to that recommendation. One benefit of this approach is that, when new accounts are created or added to the organization, GuardDuty will be auto-enabled in these accounts for all supported Regions, without the need for manual intervention.
 This pattern demonstrates how to use HashiCorp Terraform to enable Amazon GuardDuty for three or more Amazon Web Services (AWS) accounts in an organization. The sample code provided as open-source with thise pattern does the following:
+
 •	Enables GuardDuty for all AWS accounts that are current members of the target organization in AWS Organizations
+
 •	Turns on the Auto-Enable feature in GuardDuty, which automatically enables GuardDuty for any accounts that are added to the target organization in the future
+
 •	Allows you select the Regions where you want to enable GuardDuty
+
 •	Uses the organization’s security account as the GuardDuty delegated administrator
+
 •	Creates an Amazon Simple Storage Service (Amazon S3) bucket in the logging account and configures GuardDuty to publish the aggregated findings from all accounts in this bucket
+
 •	Assigns a life-cycle policy that transitions findings from the S3 bucket to Amazon S3 Glacier Flexible Retrieval storage after 365 days, by default 
+
 You can manually run this sample code, or you can integrate it into your continuous integration and continuous delivery (CI/CD) pipeline.
 
 The code in this repository helps you set up the following target architecture.
