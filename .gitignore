@@ -40,3 +40,12 @@ debug.log
 .DS_Store
 
 configuration.json
+
+#ignore generated file
+*backend.tf
+create-logging-acct-role/create-role.tf
+enable-gd/providers.tf
+enable-gd/tfm-gd-enabler.tf
+enable-gd/outputs.tf
+cfn-templates/management-account-role.yaml
+cfn-templates/role-to-assume-for-role-creation.yaml

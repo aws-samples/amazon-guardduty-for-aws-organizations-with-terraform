@@ -25,11 +25,12 @@ MAG='\033[0;35m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-echo "Create the Pipeline role in the management account:"
-echo "1. Use the management-account-policy.json to create a role in the Management account"
-echo "2. Assume this role and use the temp credentials of this role to continue"
-echo "3. Fill in the variables.tf files in the create-delegatedadmin-acct-role and create-logging-acct-role folders"
-
+echo "Ensure that the following steps are done, before proceeding"
+echo "1. Fill in the configuration.json file with all values"
+echo "2. Create IAM roles in the security and logging accounts with permissions to create IAM role"
+echo "3. Create an IAM role in the management account with minimum required permissions"
+echo "4. Assume this role and use the temp credentials of this role to continue"
+ 
 echo "Press any key to continue..."
 read -n 1
 
@@ -46,6 +47,7 @@ cd ..
 logging_acc_s3_bucket_name=`cat configuration.json | jq '.logging_acc_s3_bucket_name'`
 cp create-logging-acct-role/create-role.template create-logging-acct-role/create-role.tf
 sed -i="" "s/<logging_acc_s3_bucket_name>/${logging_acc_s3_bucket_name}/" create-logging-acct-role/create-role.tf
+rm create-logging-acct-role/create-role.tf=
 
 echo -e "${MAG}Creating the Logging account role${NC}"
 cd create-logging-acct-role

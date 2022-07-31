@@ -28,8 +28,6 @@ For prerequisites and instructions for using this AWS Prescriptive Guidance patt
 GuardDuty findings; also has a lifecycle policy to transition items to Glacier after 'n' days
 - Root-level Terraform file *tfm-findings-store* - to invoke the *s3-bucket-create* module
 - Root-level Terraform file *tfm-gd-enabler* - to enable GuardDuty for different regions
-- management-account-role-policy.json - Policy applied to the Pipeline role in the Management account
-- CLI scripts under *scripts/* - To automate the entire process from the CLI
 
 #### Resources created (list is not exhaustive)
 - S3 bucket for GuardDuty findings
@@ -39,17 +37,26 @@ GuardDuty findings; also has a lifecycle policy to transition items to Glacier a
 - Delegated admin to designate the Security account as admin for GuardDuty
 - Relevant IAM roles and policies for all the above
 
+#### Templates
+CloudFormation template files with stubs have been provided under cfn-templates/. Run the scripts/replace_config_stubs.sh script to replace the stubs with values provided in the configuration.json file. This will generate the following CloudFormation yaml files:
+- management-account-role.yaml – This file contains the role definition and the associated permissions for the IAM role in the management account, which has the minimum permissions required to complete this pattern
+- role-to-assume-for-role-creation.yaml – This file contains the role definition and the associated permissions for the IAM role in the security and logging accounts, which is used by Terraform to create the GuardDutyTerraformOrgRole in these accounts
+
 #### Scripts
 The scripts provided under scripts/ folder are used to automate the entire process. 
 
 - **[scripts/full-setup.sh](scripts/full-setup.sh)**:
     - Main script to setup the entire workflow
+- **[scripts/replace_config_stubs.sh](scripts/replace_config_stubs.sh)**:
+    - Script to generate CloudFormation YAML files for IAM roles creation
 - **[scripts/cleanup-gd.sh](scripts/cleanup-gd.sh)**:
     - Script to cleanup all the resources setup with scripts/full-setup.sh except importing the org
 
 ##### Internal scripts
 - **[scripts/generate-backend.sh](scripts/generate-backend.sh)**:
     - Internal Script used by scripts/full-setup.sh to generate code for backend.tf files
+- **[scripts/generate-tfvars.sh](scripts/generate-tfvars.sh)**:
+    - Internal Script used by scripts/full-setup.sh to generate terraform.tfvar files
 - **[scripts/create-roles.sh](scripts/create-roles.sh)**: 
     - Internal Script used by scripts/full-setup.sh to create IAM roles
 - **[scripts/setup-gd.sh](scripts/setup-gd.sh)**:
@@ -67,7 +74,7 @@ The following outputs are generated from the module *tfm-gd-enabler*:
 4) There is a configuration field "target_regions" in [configuration.json.sample](configuration.json.sample) which is a comma-separated list of preferred regions where GuardDuty needs to be enabled in the current organization. Each region specified in the "target_regions" configuration is compared with the "allowed list" from (3) before proceeding to enable GuardDuty in those preferred regions.
 
 ##### How to add support for new regions to deploy GuardDuty?
-Add the new region(s) to the "target_region" configuration field in [configuration.json.sample](configuration.json.sample) file and follow the steps in [Steps to setup](#steps-to-setup)
+Add the new region(s) to the "target_region" configuration field in [configuration.json.sample](configuration.json.sample) file and follow the steps in the pattern to deploy.
 
 ##### Handling addition of new members:
 - Once GuardDuty is enabled in the Organization, new members are automatically included in the purview of the Delegated admin.

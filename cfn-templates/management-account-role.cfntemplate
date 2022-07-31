@@ -27,7 +27,6 @@ Resources:
             - id: W11
               reason: "Guardduty permissions cannot be restricted by specific resources"
     Properties:
-      RoleName: "gdMgmtAccRole"
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -38,7 +37,7 @@ Resources:
             Action:
               - "sts:AssumeRole"
       Policies:
-        - PolicyName: RoleCreationPermissions
+        - PolicyName: GDSetupPermissions
           PolicyDocument:
             Version: '2012-10-17'
             Statement:
@@ -60,7 +59,7 @@ Resources:
                   - dynamodb:DeleteItem
                   - dynamodb:GetItem
                 Resource:
-                  - "arn:aws:dynamodb:<tfm_state_region>:<management_acc_id>:table/<tfm_state_backend_dynamodb_table>"
+                  - "arn:aws:dynamodb:<default_region>:<management_acc_id>:table/<tfm_state_backend_dynamodb_table>"
               - Sid: RoleRelated
                 Effect: Allow
                 Action:
@@ -114,3 +113,7 @@ Resources:
                 Effect: Allow
                 Action: iam:GetRole
                 Resource: arn:aws:iam::*:role/aws-service-role/*guardduty.amazonaws.com/*
+Outputs:
+  ManagementAccRole:
+    Description: IAM Role in the management account
+    Value: !GetAtt ManagementAccountRole.Arn

@@ -18,7 +18,7 @@
 
 tfm_state_backend_s3_bucket=`cat configuration.json | jq -r '.tfm_state_backend_s3_bucket'`
 tfm_state_backend_dynamodb_table=`cat configuration.json | jq -r '.tfm_state_backend_dynamodb_table'`
-tfm_state_region=`cat configuration.json | jq -r '.tfm_state_region'`
+default_region=`cat configuration.json | jq -r '.default_region'`
 management_acc_id=`cat configuration.json | jq -r '.management_acc_id'`
 delegated_admin_acc_id=`cat configuration.json | jq -r '.delegated_admin_acc_id'`
 logging_acc_id=`cat configuration.json | jq -r '.logging_acc_id'`
@@ -28,7 +28,7 @@ role_to_assume_for_role_creation=`cat configuration.json | jq -r '.role_to_assum
 cp -rf cfn-templates/management-account-role.cfntemplate cfn-templates/management-account-role.yaml
 sed -i="" "s/<tfm_state_backend_s3_bucket>/${tfm_state_backend_s3_bucket}/" cfn-templates/management-account-role.yaml
 sed -i="" "s/<tfm_state_backend_dynamodb_table>/${tfm_state_backend_dynamodb_table}/" cfn-templates/management-account-role.yaml
-sed -i="" "s/<tfm_state_region>/${tfm_state_region}/" cfn-templates/management-account-role.yaml
+sed -i="" "s/<default_region>/${default_region}/" cfn-templates/management-account-role.yaml
 sed -i="" "s/<management_acc_id>/${management_acc_id}/" cfn-templates/management-account-role.yaml
 sed -i="" "s/<delegated_admin_acc_id>/${delegated_admin_acc_id}/" cfn-templates/management-account-role.yaml
 sed -i="" "s/<logging_acc_id>/${logging_acc_id}/" cfn-templates/management-account-role.yaml
@@ -39,3 +39,6 @@ cp -rf cfn-templates/role-to-assume-for-role-creation.cfntemplate cfn-templates/
 sed -i="" "s/<management_acc_id>/${management_acc_id}/" cfn-templates/role-to-assume-for-role-creation.yaml
 sed -i="" "s/<organization_id>/${organization_id}/" cfn-templates/role-to-assume-for-role-creation.yaml
 sed -i="" "s/<role_to_assume_for_role_creation>/${role_to_assume_for_role_creation}/" cfn-templates/role-to-assume-for-role-creation.yaml
+
+rm cfn-templates/management-account-role.yaml=
+rm cfn-templates/role-to-assume-for-role-creation.yaml=

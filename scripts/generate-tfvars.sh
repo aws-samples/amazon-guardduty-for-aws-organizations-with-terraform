@@ -48,3 +48,6 @@ sed -i="" "s/<logging_acc_kms_key_alias>/${logging_acc_kms_key_alias}/" create-g
 sed -i="" "s/<logging_acc_s3_bucket_name>/${logging_acc_s3_bucket_name}/" create-gd-bucket-and-key/terraform.tfvars
 sed -i="" "s/<s3_access_log_bucket_name>/${s3_access_log_bucket_name}/" create-gd-bucket-and-key/terraform.tfvars
 
+rm create-delegatedadmin-acct-role/terraform.tfvars=
+rm create-logging-acct-role/terraform.tfvars=
+rm create-gd-bucket-and-key/terraform.tfvars=

@@ -20,6 +20,9 @@
 ## Main script to setup the entire workflow
 #######################################################################################
 
+# exit when any command fails
+set -e
+
 # Initialize terraform variables
 export TF_VAR_delegated_admin_acc_id=`cat configuration.json | jq -r ".delegated_admin_acc_id"`
 export TF_VAR_logging_acc_id=`cat configuration.json | jq -r ".logging_acc_id"`
@@ -34,11 +37,15 @@ export TF_VAR_logging_acc_s3_bucket_name=`cat configuration.json | jq -r ".loggi
 export TF_VAR_logging_acc_kms_key_alias=`cat configuration.json | jq -r ".logging_acc_kms_key_alias"`
 export TF_VAR_s3_access_log_bucket_name=`cat configuration.json | jq -r ".s3_access_log_bucket_name"`
 
+# Set default region of operation
+#
+export AWS_REGION=$TF_VAR_default_region
+
 # Initialize code files based on input configuration
 #
 bash scripts/generate-backend.sh
 
-# Create the .tfvar files
+# Create the .tfvar files for setting backend
 #
 bash scripts/generate-tfvars.sh
 

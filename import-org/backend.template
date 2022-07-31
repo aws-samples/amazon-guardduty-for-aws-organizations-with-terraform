@@ -18,7 +18,7 @@ terraform {
   backend "s3" {
     bucket = <tfm_state_backend_s3_bucket>
     key    = "remoteorg.tfstate"
-    region = <tfm_state_region>
+    region = <default_region>
     dynamodb_table = <tfm_state_backend_dynamodb_table>
   }
 }
