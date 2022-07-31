@@ -39,8 +39,8 @@ GuardDuty findings; also has a lifecycle policy to transition items to Glacier a
 
 #### Templates
 CloudFormation template files with stubs have been provided under cfn-templates/. Run the scripts/replace_config_stubs.sh script to replace the stubs with values provided in the configuration.json file. This will generate the following CloudFormation yaml files:
-- management-account-role.yaml – This file contains the role definition and the associated permissions for the IAM role in the management account, which has the minimum permissions required to complete this pattern
-- role-to-assume-for-role-creation.yaml – This file contains the role definition and the associated permissions for the IAM role in the security and logging accounts, which is used by Terraform to create the GuardDutyTerraformOrgRole in these accounts
+- *management-account-role.yaml* – This file contains the role definition and the associated permissions for the IAM role in the management account, which has the minimum permissions required to complete this pattern
+- *role-to-assume-for-role-creation.yaml* – This file contains the role definition and the associated permissions for the IAM role in the security and logging accounts, which is used by Terraform to create the GuardDutyTerraformOrgRole in these accounts
 
 #### Scripts
 The scripts provided under scripts/ folder are used to automate the entire process. 
@@ -70,7 +70,7 @@ The following outputs are generated from the module *tfm-gd-enabler*:
 #### Region Selection for enabling GuardDuty
 1) AWS GuardDuty is available in several regions. This is obtained as a list via an API call in the Python script.
 2) The Delegated Administrator account has its own list of allowed regions i.e., regions which are not *disabled* and are either opted in by the account owner or opt-in is not required. This is obtained as a separate list via another API call.
-3) The intersection of the lists from (2) and (3) provide us with an "allowed list" of regions where GuardDuty can be enabled without errors. 
+3) The intersection of the lists from (1) and (2) provide us with an "allowed list" of regions where GuardDuty can be enabled without errors. 
 4) There is a configuration field "target_regions" in [configuration.json.sample](configuration.json.sample) which is a comma-separated list of preferred regions where GuardDuty needs to be enabled in the current organization. Each region specified in the "target_regions" configuration is compared with the "allowed list" from (3) before proceeding to enable GuardDuty in those preferred regions.
 
 ##### How to add support for new regions to deploy GuardDuty?
