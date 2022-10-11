@@ -11,3 +11,8 @@ Ver 1.2.0 -
 - Aligned with APG pattern to add CloudFormation templates to create IAM roles in the management, security and logging accounts; added scripts to populate the templates with values in configuration file
 - Added script 'generate-tfvars.sh' to generate backend.tf and terraform.tfvars code files for each Terraform module
 - Updated scripts to work on Amazon Linux 2
+
+Ver 1.3.0 - 
+- Updated requried version from '= 0.14.6' to '>= 0.14.6' to add support for higher versions of Terraform; tested with version 1.2.8
+- Added automation in code to add 'guardduty.amazonaws.com' the list of service access principals in the organization; prior to this update this was to be done manually
+- Aligned with the AWS SRA to re-locate the KMS key to the security account; prior to this change this key was created in the logging account

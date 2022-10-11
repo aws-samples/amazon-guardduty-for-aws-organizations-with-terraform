@@ -29,12 +29,17 @@ NC='\033[0m' # No Color
 #
 org_id=`cat configuration.json | jq -r ".organization_id"`
 
-echo -e "${MAG}Importing Organization${NC}"
-cd import-org
-terraform init -upgrade
 
-# Note - IMPORT OF ORG WILL PASS THE FIRST TIME; TFM WILL REPORT
+cd import-org
+echo -e "${MAG}Enabling Trusted access for GuardDuty in the organization${NC}"
+echo -e "Press any key to continue..."
+read -n 1
+python3 mergeAccessPrincipals.py
+
+# Note - IMPORT OF ORG WILL PASS THE FIRST TIME; TERRAFORM WILL REPORT
 # ERROR THE SECOND TIME; THE ERROR CAN BE IGNORED
+terraform init -upgrade
+echo -e "${MAG}Importing Organization${NC}"
 terraform import aws_organizations_organization.my_org $org_id
 terraform apply -auto-approve
 echo -e "${BLUE}Done !${NC}"

@@ -63,6 +63,34 @@ data "aws_iam_policy_document" "security_acct_pol" {
     ]
   }
   statement {
+    sid    = "AllowKMS"
+    effect = "Allow"
+    actions = [
+      "kms:ListGrants",
+      "kms:DescribeKey",
+      "kms:GetKeyPolicy",
+      "kms:ListKeys",
+      "kms:ListResourceTags",
+      "kms:GetKeyRotationStatus",
+      "kms:PutKeyPolicy",
+      "kms:ScheduleKeyDeletion",
+      "kms:GenerateDataKey",
+      "kms:CreateKey",
+      "kms:EnableKeyRotation",
+      "kms:CreateAlias",
+      "kms:ListAliases",
+      "kms:DeleteAlias"
+    ]
+    resources = [
+      "*"
+    ]
+    condition {
+      test = "StringEquals"
+      variable = "kms:CallerAccount"
+      values = [var.delegated_admin_acc_id]
+    }
+  }
+  statement {
     sid       = "AllowIamPerms"
     effect    = "Allow"
     actions   = ["iam:GetRole"]

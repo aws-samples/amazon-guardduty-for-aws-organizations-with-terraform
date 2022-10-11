@@ -18,6 +18,10 @@ variable "logging_acc_id" {
   description = "The account id of the logging account."
 }
 
+variable "delegated_admin_acc_id" {
+  description = "The account id of the delegated administrator account."
+}
+
 variable "assume_role_name" {
   description = "The role to assume in the delegated admin account."
   default     = "GuardDutyTerraformOrgRole"
@@ -33,8 +37,8 @@ variable "tags" {
   }
 }
 
-variable "logging_acc_kms_key_alias" {
-  description = "Alias of the KMS key in logging account, to be used for encrypting logs at rest in s3 bucket"
+variable "security_acc_kms_key_alias" {
+  description = "Alias of the KMS key in security account, to be used for encrypting logs at rest in s3 bucket"
 }
 
 variable "logging_acc_s3_bucket_name" {

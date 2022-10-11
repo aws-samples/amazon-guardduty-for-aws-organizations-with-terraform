@@ -25,4 +25,12 @@ provider "aws" {
 
 provider "aws" {
   region = var.guardduty_findings_bucket_region
+  alias  = "delegatedadmin"
+  assume_role {
+    role_arn = "arn:aws:iam::${var.delegated_admin_acc_id}:role/${var.assume_role_name}"
+  }
+}
+
+provider "aws" {
+  region = var.guardduty_findings_bucket_region
 }

@@ -20,6 +20,10 @@ variable "logging_acc_id" {
   description = "The account id of the logging account."
 }
 
+variable "delegated_admin_acc_id" {
+  description = "The account id of the delegated administrator account."
+}
+
 variable "assume_role_name" {
   description = "The role to assume in the logging account."
 }

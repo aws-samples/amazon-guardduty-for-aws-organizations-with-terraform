@@ -29,17 +29,17 @@ For prerequisites and instructions for using this AWS Prescriptive Guidance patt
 ### Detailed Documentation
 #### Components Included
 - Terraform Code *import-org* - to store the resource config of the imported AWS Organization
-- Terraform Code *create-delegatedadmin-acct-role* - to create role for the Management account to assume in the Security account
-- Terraform Code *create-logging-acct-role* - to create role for the Management account to assume in the Logging account
+- Terraform Code *create-delegatedadmin-acct-role* - to create role for the Management account to assume in the security account
+- Terraform Code *create-logging-acct-role* - to create role for the Management account to assume in the logging account
 - Terraform Module and Code *enable-gd* - to enable GuardDuty for different regions
-- Terraform Module and Code *create-gd-bucket-and-key* - to create an S3 bucket and KMS key in the logging account to store GuardDuty findings; also has a lifecycle policy to transition items to Glacier after 'n' days
+- Terraform Module and Code *create-gd-bucket-and-key* - to create an S3 bucket in the logging account and KMS key in the security account to store GuardDuty findings; also has a lifecycle policy to transition items to Glacier after 'n' days
 
 #### Resources created (list is not exhaustive)
 - S3 bucket for GuardDuty findings
 - KMS key for encrypting the S3 bucket and an alias for the key
 - S3 lifecycle policy to move findings to S3 Glacier after 'n' days
 - GuardDuty Detectors for each of the accounts in each target region
-- Delegated admin to designate the Security account as admin for GuardDuty
+- Delegated admin to designate the security account as admin for GuardDuty
 - Relevant IAM roles and policies for all the above
 
 #### Templates
@@ -91,15 +91,16 @@ Add the new region(s) to the *target_regions* configuration field in [configurat
 ##### Notes on the service:
 - GuardDuty only incurs charges when there is actual activity in an AWS region.
 - This code can only be applied once per AWS account. Attempts to deploy the module multiple times will lead to failures during Terraform apply, due to the nature of the service.
-- The actual time for the findings to arrive at the S3 bucket in the Logging account may vary depending on many conditions.
+- The actual time for the findings to arrive at the S3 bucket in the logging account may vary depending on many conditions.
 
 #### Troubleshooting
 
 ##### Success criteria:
 If there are no errors during the above deployment process, the following can be observed via the Console:
-- The S3 bucket would be created with the KMS key in the Logging Account.
-- GuardDuty would be setup in the Organization with the Security account as Delegated Administrator. The S3 bucket is configured to collect GuardDuty findings.
-- All existing member accounts would be enrolled as members within the Accounts of the Security account and GuardDuty would be turned ON in these accounts.
+- The S3 bucket would be created in the logging Account.
+- The KMS key with key policy would be created in the security account.
+- GuardDuty would be setup in the Organization with the security account as Delegated Administrator. The S3 bucket is configured to collect GuardDuty findings.
+- All existing member accounts would be enrolled as members within the Accounts of the security account and GuardDuty would be turned ON in these accounts.
 - All newly created member accounts would have GuardDuty automatically enabled.
 - S3 Protection will be turned ON by default in all existing and new member accounts.
 - Individual member accounts cannot suspend or disable GuardDuty by themselves.

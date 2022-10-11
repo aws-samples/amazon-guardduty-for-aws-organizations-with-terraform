@@ -27,7 +27,7 @@ delegated_admin_acc_id=`cat configuration.json | jq '.delegated_admin_acc_id'`
 default_region=`cat configuration.json | jq '.default_region'`
 role_to_assume_for_role_creation=`cat configuration.json | jq '.role_to_assume_for_role_creation'`
 logging_acc_s3_bucket_name=`cat configuration.json | jq '.logging_acc_s3_bucket_name'`
-logging_acc_kms_key_alias=`cat configuration.json | jq '.logging_acc_kms_key_alias'`
+security_acc_kms_key_alias=`cat configuration.json | jq '.security_acc_kms_key_alias'`
 guardduty_findings_bucket_region=`cat configuration.json | jq '.guardduty_findings_bucket_region'`
 s3_access_log_bucket_name=`cat configuration.json | jq '.s3_access_log_bucket_name'`
 
@@ -44,7 +44,7 @@ sed -i="" "s/<role_to_assume_for_role_creation>/${role_to_assume_for_role_creati
 cp -rf create-gd-bucket-and-key/tfvars.template create-gd-bucket-and-key/terraform.tfvars
 sed -i="" "s/<logging_acc_id>/${logging_acc_id}/" create-gd-bucket-and-key/terraform.tfvars
 sed -i="" "s/<guardduty_findings_bucket_region>/${guardduty_findings_bucket_region}/" create-gd-bucket-and-key/terraform.tfvars
-sed -i="" "s/<logging_acc_kms_key_alias>/${logging_acc_kms_key_alias}/" create-gd-bucket-and-key/terraform.tfvars
+sed -i="" "s/<security_acc_kms_key_alias>/${security_acc_kms_key_alias}/" create-gd-bucket-and-key/terraform.tfvars
 sed -i="" "s/<logging_acc_s3_bucket_name>/${logging_acc_s3_bucket_name}/" create-gd-bucket-and-key/terraform.tfvars
 sed -i="" "s/<s3_access_log_bucket_name>/${s3_access_log_bucket_name}/" create-gd-bucket-and-key/terraform.tfvars
 

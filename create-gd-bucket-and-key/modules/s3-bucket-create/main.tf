@@ -174,7 +174,7 @@ data "aws_iam_policy_document" "kms_pol" {
     ]
 
     resources = [
-      "arn:aws:kms:${var.default_region}:${var.logging_acc_id}:key/*"
+      "arn:aws:kms:${var.default_region}:${var.delegated_admin_acc_id}:key/*"
     ]
 
     principals {
@@ -192,7 +192,7 @@ data "aws_iam_policy_document" "kms_pol" {
     ]
 
     resources = [
-      "arn:aws:kms:${var.default_region}:${var.logging_acc_id}:key/*"
+      "arn:aws:kms:${var.default_region}:${var.delegated_admin_acc_id}:key/*"
     ]
 
     principals {
@@ -217,12 +217,12 @@ data "aws_iam_policy_document" "kms_pol" {
     ]
 
     resources = [
-      "arn:aws:kms:${var.default_region}:${var.logging_acc_id}:key/*"
+      "arn:aws:kms:${var.default_region}:${var.delegated_admin_acc_id}:key/*"
     ]
 
     principals {
       type        = "AWS"
-      identifiers = ["arn:aws:iam::${var.logging_acc_id}:root"]
+      identifiers = ["arn:aws:iam::${var.delegated_admin_acc_id}:root"]
     }
   }
 
@@ -251,14 +251,14 @@ data "aws_iam_policy_document" "kms_pol" {
 
     principals {
       type        = "AWS"
-      identifiers = ["arn:aws:iam::${var.logging_acc_id}:role/${var.assume_role_name}"]
+      identifiers = ["arn:aws:iam::${var.delegated_admin_acc_id}:role/${var.assume_role_name}"]
     }
   }
 }
 
 # KMS CMK to be created to encrypt GD findings in the S3 bucket
 resource "aws_kms_key" "gd_key" {
-  provider                = aws.src
+  provider                = aws.key
   description             = "GuardDuty findings encryption CMK"
   deletion_window_in_days = 7
   enable_key_rotation     = true
@@ -267,7 +267,7 @@ resource "aws_kms_key" "gd_key" {
 }
 
 resource "aws_kms_alias" "kms_key_alias" {
-  provider      = aws.src
+  provider      = aws.key
   name          = "alias/${var.kms_key_alias}"
   target_key_id = aws_kms_key.gd_key.key_id
 }

@@ -20,11 +20,13 @@ module "gd_findings_bucket_and_key" {
 
   providers = {
     aws.src = aws.default
+    aws.key = aws.delegatedadmin
   }
 
   logging_acc_id                                    = var.logging_acc_id
+  delegated_admin_acc_id                            = var.delegated_admin_acc_id
   assume_role_name                                  = var.assume_role_name
-  kms_key_alias                                     = var.logging_acc_kms_key_alias
+  kms_key_alias                                     = var.security_acc_kms_key_alias
   s3_logging_bucket_name                            = var.logging_acc_s3_bucket_name
   s3_access_log_bucket_name                         = var.s3_access_log_bucket_name
   default_region                                    = var.guardduty_findings_bucket_region

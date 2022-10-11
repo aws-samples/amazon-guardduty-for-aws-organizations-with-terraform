@@ -9,7 +9,7 @@
     "finding_publishing_frequency" : "FIFTEEN_MINUTES" <Can be customized>,
     "guardduty_findings_bucket_region" : "<GUARDDUTY-BUCKET-REGION>",
     "logging_acc_s3_bucket_name" : "<GUARDDUTY-BUCKET-NAME>",
-    "logging_acc_kms_key_alias" : "<KMS-ALIAS>",
+    "security_acc_kms_key_alias" : "<KMS-ALIAS>",
     "s3_access_log_bucket_name" : "<GUARDDUTY-FINDINGS-BUCKET-ACCESS-LOGS-BUCKET-NAME>",
     "tfm_state_backend_s3_bucket" : "<S3-BUCKET-NAME-FOR-TFM-BACKEND>",
     "tfm_state_backend_dynamodb_table" : "<S3-BUCKET-NAME-FOR-TFM-BACKEND>"

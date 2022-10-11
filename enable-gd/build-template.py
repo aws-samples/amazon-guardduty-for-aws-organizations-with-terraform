@@ -23,8 +23,8 @@ import re
 import csv
 import datetime
 
-print('Number of arguments:', len(sys.argv), 'arguments.')
-print('Argument List:', str(sys.argv))
+#print('Number of arguments:', len(sys.argv), 'arguments.')
+#print('Argument List:', str(sys.argv))
 
 if (len(sys.argv) != 3):
   print('The script needs the security account id and name of a role to assume as arguments')

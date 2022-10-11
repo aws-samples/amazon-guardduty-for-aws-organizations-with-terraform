@@ -17,6 +17,6 @@
 logging_acc_id=<logging_acc_id>
 
 guardduty_findings_bucket_region=<guardduty_findings_bucket_region>
-logging_acc_kms_key_alias=<logging_acc_kms_key_alias>
+security_acc_kms_key_alias=<security_acc_kms_key_alias>
 logging_acc_s3_bucket_name=<logging_acc_s3_bucket_name>
 s3_access_log_bucket_name=<s3_access_log_bucket_name>
