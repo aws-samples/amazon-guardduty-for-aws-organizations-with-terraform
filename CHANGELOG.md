@@ -13,6 +13,6 @@ Ver 1.2.0 -
 - Updated scripts to work on Amazon Linux 2
 
 Ver 1.3.0 - 
-- Updated requried version from '= 0.14.6' to '>= 0.14.6' to add support for higher versions of Terraform; tested with version 1.2.8
-- Added automation in code to add 'guardduty.amazonaws.com' the list of service access principals in the organization; prior to this update this was to be done manually
+- Updated required version from '= 0.14.6' to '>= 0.14.6' to add support for higher versions of Terraform; tested with version 1.2.8
+- Added automation to dynamically update 'guardduty.amazonaws.com' to the list of service access principals in the organization; prior to this update this was to be done manually
 - Aligned with the AWS SRA to re-locate the KMS key to the security account; prior to this change this key was created in the logging account
