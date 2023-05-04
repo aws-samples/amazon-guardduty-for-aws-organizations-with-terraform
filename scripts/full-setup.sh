@@ -53,6 +53,10 @@ bash scripts/generate-tfvars.sh
 #
 bash scripts/create-roles.sh
 
+# Enable GD service access for the AWS Organizations
+#
+bash scripts/enable-service-access.sh
+
 # Enable GD for the AWS Organizations
 #
 bash scripts/setup-gd.sh

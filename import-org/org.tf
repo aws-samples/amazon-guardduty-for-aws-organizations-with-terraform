@@ -18,7 +18,4 @@
 resource "aws_organizations_organization" "my_org" {
   provider = aws.src
 
-  feature_set = "ALL"
-
-  aws_service_access_principals = ["sso.amazonaws.com", "config.amazonaws.com", "securityhub.amazonaws.com", "guardduty.amazonaws.com", "config-multiaccountsetup.amazonaws.com"]
 }
