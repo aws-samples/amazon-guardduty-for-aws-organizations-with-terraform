@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #  Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #  SPDX-License-Identifier: MIT-0
 
@@ -14,12 +16,10 @@
 #  OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 #  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-resource "aws_organizations_organization" "my_org" {
-  provider = aws.src
-
-  feature_set = "ALL"
-
-  aws_service_access_principals = [
-    {{serviceAccessPrincipals}}
-  ]
-}
+result=$(aws organizations list-aws-service-access-for-organization | jq -r '.EnabledServicePrincipals[] | select(.ServicePrincipal|test("guardduty.amazonaws.com")) | .ServicePrincipal')
+if [ "$result" = "guardduty.amazonaws.com" ]; then 
+    echo "Service access for guardduty.amazonaws.com is already set."; 
+else 
+    echo "Service access is not set for guardduty.amazonaws.com. Doing it now...";
+    aws organizations enable-aws-service-access --service-principal "guardduty.amazonaws.com"
+fi
