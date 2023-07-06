@@ -1,0 +1,43 @@
+name: Base Infra - Plan [stg]
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    name: Create staging terraform plan
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Fetch shared actions
+        uses: actions/checkout@v3
+        with:
+          ref: "main"
+          repository: normative-io/shared-actions
+          path: shared-actions
+          ssh-key: ${{ secrets.SSH_KEY_SHARED_ACTIONS }}
+
+      - name: Configure AWS Profiles
+        uses: ./shared-actions/actions/setup-normative-aws-profiles
+        with:
+          aws_role_normative_root: ${{ secrets.GHA_ROLE_NORMATIVE_ROOT }}
+          aws_role_normative_staging: ${{ secrets.GHA_ROLE_NORMATIVE_STAGING }}
+
+      - name: "Setup Terraform"
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.0
+          cli_config_credentials_token: ${{ secrets.TERRAFORM_CLOUD_TOKEN }}
+
+      - name:  "Debug"
+        run: |
+            terraform -v
