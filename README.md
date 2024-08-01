@@ -120,7 +120,7 @@ If there are no errors during the above deployment process, the following can be
 
 #### Known Errors
 
-For subsequent runs of the steps to deploy after the first run, a known error will be reported about importing and already imported resource for the import-org module. Though this is shown as an 'Error', this is expected behavior and does not affect the rest of the setup, so it can be ignored.
+For subsequent runs of the steps to deploy after the first run, a known error will be reported about importing an already imported resource for the `import-org` module. Though this is shown as an `Error`, this is expected behavior and does not affect the rest of the setup, so it can be ignored.
 
 ## Contributing
 
