@@ -20,7 +20,7 @@ variable "delegated_admin_acc_id" {
 
 variable "assume_role_name" {
   description = "The role to assume in the delegated admin account."
-  default = "GuardDutyTerraformOrgRole"
+  default     = "GuardDutyTerraformOrgRole"
 }
 
 variable "target_regions" {
