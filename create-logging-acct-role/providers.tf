@@ -23,5 +23,5 @@ provider "aws" {
 
 provider "aws" {
   region = var.default_region
-  alias = "primary"
+  alias  = "primary"
 }

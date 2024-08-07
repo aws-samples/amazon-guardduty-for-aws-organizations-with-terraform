@@ -15,6 +15,6 @@
 #  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 provider "aws" {
-  alias = "src"
+  alias  = "src"
   region = var.default_region
 }

@@ -64,6 +64,6 @@ variable "s3_bucket_object_deletion_after_days" {
 }
 
 variable "s3_access_log_bucket_name" {
-  type = string
+  type        = string
   description = "Bucket to store access logs for GD bucket"
 }
