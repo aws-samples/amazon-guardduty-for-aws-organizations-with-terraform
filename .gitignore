@@ -12,7 +12,6 @@ crash.log
 # password, private keys, and other secrets. These should not be part of version 
 # control as they are data points which are potentially sensitive and subject 
 # to change depending on the environment.
-#
 *.tfvars
 
 # Ignore override files as they are usually used to override resources locally and so
@@ -32,13 +31,9 @@ override.tf.json
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
-
 debug.log
-
 *.lock.hcl
-
 .DS_Store
-
 configuration.json
 
 #ignore generated file

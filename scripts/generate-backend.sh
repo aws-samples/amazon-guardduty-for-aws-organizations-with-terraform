@@ -1,4 +1,5 @@
 #!/bin/bash
+set -o errexit
 
 #  Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #  SPDX-License-Identifier: MIT-0
@@ -21,7 +22,6 @@
 #######################################################################################
 
 # Replace Terraform backend S3 bucket and DynamoDB table stubs based on configuration
-#
 tfm_state_s3=`cat configuration.json | jq '.tfm_state_backend_s3_bucket'`
 tfm_state_dynamodb=`cat configuration.json | jq '.tfm_state_backend_dynamodb_table'`
 default_region=`cat configuration.json | jq '.default_region'`

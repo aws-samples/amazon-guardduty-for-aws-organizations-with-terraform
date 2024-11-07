@@ -23,7 +23,6 @@ terraform {
   }
 }
 
-
 data "terraform_remote_state" "guardduty_org" {
   backend = "s3"
 

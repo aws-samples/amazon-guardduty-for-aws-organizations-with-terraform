@@ -55,9 +55,9 @@ data "aws_iam_policy_document" "security_acct_pol" {
       "guardduty:DeleteMembers",
       "guardduty:GetMembers",
       "ec2:DescribeAccountAttributes",
-      "ec2:DescribeRegions"
+      "ec2:DescribeRegions",
+      "guardduty:*Malware*"
     ]
-
     resources = [
       "*"
     ]
@@ -117,4 +117,3 @@ resource "aws_iam_role_policy_attachment" "attach_gd_terraform_security_acct_pol
   role       = aws_iam_role.GuardDutyTerraformSecurityAcctRole.name
   policy_arn = aws_iam_policy.gd_terraform_security_acct_policy.arn
 }
-

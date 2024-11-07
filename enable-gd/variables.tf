@@ -14,6 +14,11 @@
 #  OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 #  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+variable "default_region" {
+  description = "The primary region for GuardDuty"
+  default     = ""
+}
+
 variable "delegated_admin_acc_id" {
   description = "The account id of the delegated admin."
 }
@@ -36,4 +41,3 @@ variable "tags" {
 variable "finding_publishing_frequency" {
   description = "Specifies the frequency of notifications sent for subsequent finding occurrences."
 }
-

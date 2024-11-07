@@ -1,4 +1,5 @@
 #!/bin/bash
+set -o errexit
 
 #  Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #  SPDX-License-Identifier: MIT-0
@@ -20,7 +21,7 @@
 ## Script to cleanup all the resources setup with scripts/full-setup.sh
 #######################################################################
 
-# Colour highlighting
+# Color highlighting
 MAG='\033[0;35m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
@@ -39,35 +40,40 @@ export TF_VAR_logging_acc_s3_bucket_name=`cat configuration.json | jq -r ".loggi
 export TF_VAR_security_acc_kms_key_alias=`cat configuration.json | jq -r ".security_acc_kms_key_alias"`
 export TF_VAR_s3_access_log_bucket_name=`cat configuration.json | jq -r ".s3_access_log_bucket_name"`
 
-echo -e "${MAG}Cleaning up GuardDuty${NC}"
+echo -e "\n${MAG}########################################################"
+echo -e "Disable GuardDuty"
+echo -e "########################################################${NC}"
 cd enable-gd
 terraform init
 terraform destroy -auto-approve
-echo -e "${BLUE}Done !${NC}"
-echo ""
+echo -e "\n${BLUE}Done!\n##########${NC}"
 cd ..
 
-
-echo -e "${MAG}Cleaning up GuardDuty Findings bucket and key${NC}"
+echo -e "\n${MAG}########################################################"
+echo -e "Remove GuardDuty Findings bucket and key"
+echo -e "########################################################${NC}"
 cd create-gd-bucket-and-key
 terraform init
 terraform destroy -auto-approve
-echo -e "${BLUE}Done !${NC}"
-echo ""
+echo -e "\n${BLUE}Done!\n##########${NC}"
 cd ..
 
-echo -e "${MAG}Cleaning up Logging account role${NC}"
+echo -e "\n${MAG}########################################################"
+echo -e "Remove logging account role"
+echo -e "########################################################${NC}"
 cd create-logging-acct-role
 terraform init
 terraform destroy -auto-approve
-echo -e "${BLUE}Done !${NC}"
-echo ""
+echo -e "\n${BLUE}Done!\n##########${NC}"
 cd ..
 
-echo -e "${MAG}Cleaning up Delegated admin role${NC}"
+echo -e "\n${MAG}########################################################"
+echo -e "Remove delegated admin role"
+echo -e "########################################################${NC}"
 cd create-delegatedadmin-acct-role
 terraform init
 terraform destroy -auto-approve
-echo -e "${BLUE}Done !${NC}"
-echo ""
+echo -e "\n${BLUE}Done!\n##########${NC}"
 cd ..
+
+echo -e "\n${MAG}Cleanup process complete!\n##########${NC}"

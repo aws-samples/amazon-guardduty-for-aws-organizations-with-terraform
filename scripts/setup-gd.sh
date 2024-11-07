@@ -1,4 +1,5 @@
 #!/bin/bash
+set -o errexit
 
 #  Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #  SPDX-License-Identifier: MIT-0
@@ -20,48 +21,52 @@
 ## Internal Script used by scripts/full-setup.sh to import org and enable GuardDuty
 #######################################################################################
 
-# Colour highlighting
+# Color highlighting
 MAG='\033[0;35m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Replace Organization stub with org ID from configuration file
-#
 org_id=`cat configuration.json | jq -r ".organization_id"`
 
-
+echo -e "\n${MAG}########################################################"
+echo -e "Import Organization"
+echo -e "########################################################${NC}"
 cd import-org
-
-# Note - IMPORT OF ORG WILL PASS THE FIRST TIME; TERRAFORM WILL REPORT
-# ERROR THE SECOND TIME; THE ERROR CAN BE IGNORED
 terraform init -upgrade
-echo -e "${MAG}Importing Organization${NC}"
-terraform import aws_organizations_organization.my_org $org_id
-echo -e "${BLUE}Done !${NC}"
-echo ""
-cd ..
 
-echo -e "${MAG}Creating GuardDuty Findings bucket and key${NC}"
+# Check if organization has already been imported, if not, import it
+if terraform state list | grep -q 'aws_organizations_organization.my_org'; then
+   echo "Organization already imported. Skipping."
+else
+  terraform import aws_organizations_organization.my_org $org_id
+fi
+cd ..
+echo -e "\n${BLUE}Done!\n##########${NC}"
+
+echo -e "\n${MAG}########################################################"
+echo -e "Create GuardDuty Findings bucket and key"
+echo -e "########################################################${NC}"
 cd create-gd-bucket-and-key
 terraform init -upgrade
 terraform apply -auto-approve
-echo -e "${BLUE}Done !${NC}"
-echo ""
+echo -e "\n${BLUE}Done!\n##########${NC}"
 cd ..
 
 # Generate the terraform code for all allowed regions
-#
 delegated_admin_acc_id=`cat configuration.json | jq -r ".delegated_admin_acc_id"`
 cd create-delegatedadmin-acct-role
 role_to_assume=`terraform output -json security_acct_role_to_assume`
 cd ..
 python3 enable-gd/build-template.py $delegated_admin_acc_id $role_to_assume
 
-echo -e "${MAG}Turning on GuardDuty${NC}"
+echo -e "\n${MAG}########################################################"
+echo -e "Enable GuardDuty"
+echo -e "########################################################${NC}"
 cd enable-gd
 terraform init -upgrade
 terraform apply -auto-approve
-echo -e "${BLUE}Done !${NC}"
-echo ""
+echo -e "\n${BLUE}Done!\n##########${NC}"
 cd ..
 
+echo -e "\n${MAG}Setup process complete!\n##########${NC}"

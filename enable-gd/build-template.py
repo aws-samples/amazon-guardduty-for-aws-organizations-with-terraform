@@ -23,31 +23,33 @@ import re
 import csv
 import datetime
 
-#print('Number of arguments:', len(sys.argv), 'arguments.')
-#print('Argument List:', str(sys.argv))
+# print('Number of arguments:', len(sys.argv), 'arguments.')
+# print('Argument List:', str(sys.argv))
 
-if (len(sys.argv) != 3):
-  print('The script needs the security account id and name of a role to assume as arguments')
-  exit()
+if len(sys.argv) != 3:
+    print(
+        "The script needs the security account id and name of a role to assume as arguments"
+    )
+    exit()
+
 
 def assume_role(aws_account_number, role_name):
-
     # Beginning the assume role process for account
-    sts_client = boto3.client('sts')
-    partition = sts_client.get_caller_identity()['Arn'].split(':')[1]
+    sts_client = boto3.client("sts")
+    partition = sts_client.get_caller_identity()["Arn"].split(":")[1]
 
     response = sts_client.assume_role(
-        RoleArn=f'arn:{partition}:iam::{aws_account_number}:role/{role_name}',
-        RoleSessionName='EnableGuardDuty'
+        RoleArn=f"arn:{partition}:iam::{aws_account_number}:role/{role_name}",
+        RoleSessionName="EnableGuardDuty",
     )
 
     # Storing STS credentials
     sts_session = boto3.Session(
-        aws_access_key_id=response['Credentials']['AccessKeyId'],
-        aws_secret_access_key=response['Credentials']['SecretAccessKey'],
-        aws_session_token=response['Credentials']['SessionToken']
+        aws_access_key_id=response["Credentials"]["AccessKeyId"],
+        aws_secret_access_key=response["Credentials"]["SecretAccessKey"],
+        aws_session_token=response["Credentials"]["SessionToken"],
     )
-    print(f'Assumed session for {aws_account_number}.')
+    print(f"Assumming session for {aws_account_number}.")
 
     return sts_session
 
@@ -70,7 +72,7 @@ disclaimer = """
 #  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 """
-ssm = boto3.client('ssm')
+ssm = boto3.client("ssm")
 
 # ============================================================================
 # To select all supported regions for which to generate the GuardDuty-enabler code, a 3-step process is done below:
@@ -82,26 +84,33 @@ ssm = boto3.client('ssm')
 # (a) The list of regions where GuardDuty service is available is retrieved
 #
 params = []
-res = ssm.get_parameters_by_path(Path='/aws/service/global-infrastructure/services/guardduty/regions')
-params = params + res['Parameters']
-while ('NextToken' in res):
-  res = ssm.get_parameters_by_path(Path='/aws/service/global-infrastructure/services/guardduty/regions', NextToken=res['NextToken'])
-  params = params + res['Parameters']
+res = ssm.get_parameters_by_path(
+    Path="/aws/service/global-infrastructure/services/guardduty/regions"
+)
+params = params + res["Parameters"]
+while "NextToken" in res:
+    res = ssm.get_parameters_by_path(
+        Path="/aws/service/global-infrastructure/services/guardduty/regions",
+        NextToken=res["NextToken"],
+    )
+    params = params + res["Parameters"]
 gd_allowed_regions = []
 for param in params:
-  gd_allowed_regions.append(param['Value'])
+    gd_allowed_regions.append(param["Value"])
 
 # (b) The list of enabled-cum-opted-in regions for the delegated admin account is retrieved
 #
 delg_admin_session = assume_role(sys.argv[1].strip('"'), sys.argv[2].strip('"'))
-ec2 = delg_admin_session.client('ec2')
-res = ec2.describe_regions(Filters=[{'Name':'opt-in-status', 'Values':['opt-in-not-required','opted-in']}])
+ec2 = delg_admin_session.client("ec2")
+res = ec2.describe_regions(
+    Filters=[{"Name": "opt-in-status", "Values": ["opt-in-not-required", "opted-in"]}]
+)
 opted_regions = []
-for region in res['Regions']:
-  opted_regions.append(region['RegionName'])
+for region in res["Regions"]:
+    opted_regions.append(region["RegionName"])
 
 # (c) Intersect the two lists above for the final allowed regions
-# 
+#
 allowed_regions = list(set(gd_allowed_regions) & set(opted_regions))
 
 provider_default = """
@@ -128,7 +137,7 @@ file1 = open("enable-gd/providers.tf", "w")
 file1.write(disclaimer)
 file1.write(provider_default)
 for region in allowed_regions:
-  file1.write(provider.replace("{{region}}", region))
+    file1.write(provider.replace("{{region}}", region))
 file1.close()
 
 enable_gd_locals = """
@@ -171,7 +180,7 @@ file1 = open("enable-gd/tfm-gd-enabler.tf", "w")
 file1.write(disclaimer)
 file1.write(enable_gd_locals)
 for region in allowed_regions:
-  file1.write(enable_gd_entity.replace("{{region}}", region))
+    file1.write(enable_gd_entity.replace("{{region}}", region))
 file1.close()
 
 enable_gd_output_header = """
@@ -181,7 +190,9 @@ output "guardduty_detector" {
   value = {
 """
 
-enable_gd_output_item = '"{{region}}" = module.guardduty_baseline_{{region}}.guardduty_detector'
+enable_gd_output_item = (
+    '"{{region}}" = module.guardduty_baseline_{{region}}.guardduty_detector'
+)
 enable_gd_output_footer = """
   }
 }
@@ -192,9 +203,10 @@ file1.write(disclaimer)
 file1.write(enable_gd_output_header)
 
 for region in allowed_regions:
-  file1.write('    ' + enable_gd_output_item.replace("{{region}}", region.strip('"')) + '\n')
+    file1.write(
+        "    " + enable_gd_output_item.replace("{{region}}", region.strip('"')) + "\n"
+    )
 
 file1.write(enable_gd_output_footer)
 
 file1.close()
-

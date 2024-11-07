@@ -19,7 +19,7 @@ This sample Terraform code can be deployed locally or integrated into a continuo
 
 ## Diagrams
 
-![Target architecture diagram](images/GuardDutyDeployment.jpg)
+![Target architecture diagram](images/guardduty-tf.png)
 
 For prerequisites and instructions for using this AWS Prescriptive Guidance pattern, see [Use Terraform to automatically enable Amazon GuardDuty for an organization](https://docs.aws.amazon.com/prescriptive-guidance/latest/patterns/use-terraform-to-automatically-enable-amazon-guardduty-for-an-organization.html).
 
@@ -30,10 +30,10 @@ For prerequisites and instructions for using this AWS Prescriptive Guidance patt
 - Terraform Code `import-org` - to store the resource config of the imported AWS Organization
 - Terraform Code `create-delegatedadmin-acct-role` - to create role for the Management account to assume in the security account
 - Terraform Code `create-logging-acct-role` - to create role for the Management account to assume in the logging account
-- Terraform Module and Code `enable-gd` - to enable GuardDuty for different regions
 - Terraform Module and Code `create-gd-bucket-and-key` - to create an S3 bucket in the logging account and KMS key in the security account to store GuardDuty findings; also has a lifecycle policy to transition items to Glacier after 'n' days
+- Terraform Module and Code `enable-gd` - to enable GuardDuty for different regions
 
-### Resources Created (list is not exhaustive)
+### Resources Created
 
 - S3 bucket for GuardDuty findings
 - KMS key for encrypting the S3 bucket and an alias for the key
@@ -79,34 +79,31 @@ The following outputs are generated from the module `tfm-gd-enabler`:
 
 ### Additional Notes
 
-#### Region Selection for enabling GuardDuty
+#### Region Selection for Enabling GuardDuty
 
 1) AWS GuardDuty is available in several regions. This is obtained as a list via an API call in the Python script
-2) The Delegated Administrator account has its own list of allowed regions i.e., regions which are not disabled and are either opted in by the account owner or opt-in is not required. This is obtained as a separate list via another API call
+2) The `Delegated Administrator` account has its own list of allowed regions i.e., regions which are not disabled and are either opted in by the account owner or opt-in is not required. This is obtained as a separate list via another API call
 3) The intersection of the lists from (1) and (2) provide us with an "allowed list" of regions where GuardDuty can be enabled without errors
 4) There is a configuration field `target_regions` in [configuration.json.sample](configuration.json.sample) which is a comma-separated list of preferred regions where GuardDuty needs to be enabled in the current organization. Each region specified in the `target_regions` configuration is compared with the "allowed list" from (3) before proceeding to enable GuardDuty in those preferred regions
 
-#### How to add support for new regions to deploy GuardDuty?
+#### How to Add Support for New Regions to Deploy GuardDuty
 
 Add the new region(s) to the `target_regions` configuration field in [configuration.json.sample](configuration.json.sample) file and follow the steps in the pattern to deploy.
 
-#### Handling addition of new members
+#### Handling of New Members
 
-- Once GuardDuty is enabled in the Organization, new members are automatically included in the purview of the Delegated admin
-- GuardDuty is automatically turned on in the new member account and other settings are configured
+- Once GuardDuty is enabled in the Organization, new member accounts are automatically included
 - In order to selectively update the state in Terraform, do the following
   1) Under `import-org/` run `terraform plan`, check that the new accounts are included in the state and there are no other changes; then run `terraform apply`
   2) Under `enable-gd/` run `terraform plan`, check that the new accounts are included in the state and there are no other changes; then run `terraform apply`
 
-#### Notes on the service
+#### Notes on the Service
 
 - GuardDuty only incurs charges when there is actual activity in an AWS region
 - This code can only be applied once per AWS account. Attempts to deploy the module multiple times will lead to failures during Terraform apply, due to the nature of the service
 - The actual time for the findings to arrive at the S3 bucket in the logging account may vary depending on many conditions
 
-### Troubleshooting
-
-#### Success Criteria
+### Success Criteria
 
 If there are no errors during the above deployment process, the following can be observed via the console:
 
@@ -118,9 +115,11 @@ If there are no errors during the above deployment process, the following can be
 - S3 Protection will be turned ON by default in all existing and new member accounts
 - Individual member accounts cannot suspend or disable GuardDuty by themselves
 
-#### Known Errors
+### Troubleshooting
 
-For subsequent runs of the steps to deploy after the first run, a known error will be reported about importing an already imported resource for the `import-org` module. Though this is shown as an `Error`, this is expected behavior and does not affect the rest of the setup, so it can be ignored.
+| Issue | Solution |
+| --- | --- |
+| When disabling GuardDuty by running the cleanup-gd.sh script, it can fail if there are any suspended accounts in AWS Organizations that are still associated with GuardDuty in that region. | From the AWS CLI, check to see if there are any outstanding associations that are not displayed in the GuardDuty console. `aws guardduty list-members --detector-id <detector-id> --only-associated false --region <region>`. If found, those member account associations can be deleted. `aws guardduty delete-members --detector-id <detector-id> --account-ids "<account-id>" --region <region>` |
 
 ## Contributing
 
