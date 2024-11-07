@@ -1,4 +1,5 @@
 #!/bin/bash
+set -o errexit
 
 #  Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #  SPDX-License-Identifier: MIT-0
@@ -21,7 +22,6 @@
 #######################################################################################
 
 # Replace Terraform backend S3 bucket and DynamoDB table stubs based on configuration
-#
 logging_acc_id=`cat configuration.json | jq '.logging_acc_id'`
 delegated_admin_acc_id=`cat configuration.json | jq '.delegated_admin_acc_id'`
 default_region=`cat configuration.json | jq '.default_region'`
