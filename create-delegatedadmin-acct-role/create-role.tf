@@ -85,9 +85,9 @@ data "aws_iam_policy_document" "security_acct_pol" {
       "*"
     ]
     condition {
-      test = "StringEquals"
+      test     = "StringEquals"
       variable = "kms:CallerAccount"
-      values = [var.delegated_admin_acc_id]
+      values   = [var.delegated_admin_acc_id]
     }
   }
   statement {
