@@ -332,5 +332,3 @@ resource "aws_s3_bucket_policy" "gd_bucket_policy" {
   bucket     = aws_s3_bucket.gd_bucket.id
   policy     = data.aws_iam_policy_document.bucket_pol.json
 }
-
-

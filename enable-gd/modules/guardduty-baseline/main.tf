@@ -1,4 +1,3 @@
-
 #  Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 #  SPDX-License-Identifier: MIT-0
 
@@ -14,6 +13,7 @@
 #  HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 #  OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 #  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 
 # GuardDuty Detector in the Delegated admin account
 resource "aws_guardduty_detector" "MyDetector" {
@@ -54,8 +54,8 @@ resource "aws_guardduty_organization_configuration" "MyGDOrg" {
   auto_enable_organization_members = "ALL"
   detector_id                      = aws_guardduty_detector.MyDetector[0].id
 
-  # Additional setting to turn on S3 Protection
   datasources {
+    # Additional setting to turn on S3 Protection
     s3_logs {
       auto_enable = true
     }

@@ -119,7 +119,7 @@ If there are no errors during the above deployment process, the following can be
 
 | Issue | Solution |
 | --- | --- |
-|When disabling GuardDuty by running the cleanup-gd.sh script, it can fail if there are any suspended accounts in AWS Organizations that are still associated with GuardDuty in that region. | From the AWS CLI, check to see if there are any outstanding associations that are not displayed in the GuardDuty console. `aws guardduty list-members --detector-id <detector-id> --only-associated false --region <region>`. If found, those member account associations can be deleted. `aws guardduty delete-members --detector-id <detector-id> --account-ids "<account-id>" --region <region>`Ama
+| When disabling GuardDuty by running the cleanup-gd.sh script, it can fail if there are any suspended accounts in AWS Organizations that are still associated with GuardDuty in that region. | From the AWS CLI, check to see if there are any outstanding associations that are not displayed in the GuardDuty console. `aws guardduty list-members --detector-id <detector-id> --only-associated false --region <region>`. If found, those member account associations can be deleted. `aws guardduty delete-members --detector-id <detector-id> --account-ids "<account-id>" --region <region>` |
 
 ## Contributing
 
